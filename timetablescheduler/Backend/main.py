@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 import httpx 
+from typing import Optional, List
 
 app = FastAPI()
 
@@ -116,3 +117,57 @@ async def get_holidays():
     except Exception as e:
         print("❌ Backend Holiday Error:", str(e))
         raise HTTPException(status_code=500, detail="Failed to fetch holidays")
+    
+#--------------MANAGE STUDENTS--------------
+@app.get("/api/students")
+async def get_students():
+    students_cursor = db["user"].find({"role": "student"})
+    students = []
+    async for student in students_cursor:
+        student["_id"] = str(student["_id"])
+        students.append({
+            "id": student["_id"],
+            "sl_no": student["sl_no"],
+            "name": student.get("display_name"),
+            "email": student.get("email"),
+            "usn": student.get("usn")
+        })
+    return students
+
+class Student(BaseModel):
+    id: str
+    name: str
+    email: str
+    usn: str
+    gender: Optional[str] = None
+    
+db_students: List[Student] = []
+
+#--------------STUDENT BULK UPDATE-----------
+#--------------STUDENT BULK UPDATE-----------
+@app.put("/api/students/bulk-update")
+async def bulk_update_students(students: List[Student]):
+    try:
+        # Clear existing student documents (only role=student)
+        await db["user"].delete_many({"role": "student"})
+
+        # Insert updated list
+        new_students = []
+        for stu in students:
+            new_students.append({
+                "_id": stu.id,   # reuse frontend ID
+                "sl_no": students.index(stu) + 1,
+                "display_name": stu.name,
+                "email": stu.email,
+                "usn": stu.usn,
+                "gender": stu.gender,
+                "role": "student"
+            })
+
+        if new_students:
+            await db["user"].insert_many(new_students)
+
+        return students
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
