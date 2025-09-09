@@ -1,0 +1,7 @@
+sl_no,role,email,usn,display_name,gender
+1,admin,admin@kletech.ac.in,,Admin,
+2,teacher,teacher@kletech.ac.in,,Teacher,
+3,student,01fs24bec009@kletech.ac.in,01fs24bec009,Varsha,female
+4,student,01fs24bec013@kletech.ac.in,01fs24bec013,Chandrika,female
+5,student,01fs24bec014@kletech.ac.in,01fs24bec014,Sanjana,female
+6,student,01fs24bec017@kletech.ac.in,01fs24bec017,Prajwal,male

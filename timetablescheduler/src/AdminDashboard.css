@@ -1,0 +1,275 @@
+.admin-container {
+   display: flex;
+   height: 100vh;
+   background: #f5f7fa;
+}
+
+.sidebar {
+   width: 144px;
+   background: #0a3c62;
+   color: white;
+   padding: 7px;
+}
+
+.sidebar h2 {
+   margin-bottom: 20px;
+}
+
+.sidebar ul {
+   padding: 0px 0px;
+}
+
+.sidebar ul li a {
+   display: block;
+   padding: 10px 0px;
+   color: #fff;
+   text-decoration: none;
+   text-align: left;
+}
+
+.sidebar ul li a:hover {
+   background: #03458b;
+   padding-left: 0.25vw;
+}
+
+.sidebar ul li a.active {
+   background: #0964c5;
+   color: white;
+   font-weight: bold;
+   /* border-radius: 5px; */
+}
+
+.dashboard {
+   flex: 1;
+}
+
+.dashboardBody {
+   display: flex;
+}
+
+.leftSide {
+   width: calc(100% - 300px);
+}
+
+.card-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+   gap: 20px;
+   margin-top: 10px;
+   padding: 0px 20px;
+   padding-bottom: 5px;
+}
+
+.card {
+   background: white;
+   padding: 10px 20px;
+   border-radius: 10px;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+   text-align: center;
+   align-content: center;
+}
+
+.card p {
+   margin: 0;
+
+}
+
+.belowGrid {
+   display: flex;
+   margin: 0px 20px;
+   padding: 10px 0px;
+   column-gap: 20px;
+}
+
+.notice-board {
+   background: #fff;
+   padding: 20px;
+   flex: 1;
+   align-content: baseline;
+   border-radius: 16px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.notice-board h3 {
+   font-size: 18px;
+   margin-bottom: 4px;
+   text-align: left;
+}
+
+.subtitle {
+   font-size: 12px;
+   color: #666;
+   margin-bottom: 15px;
+}
+
+.notice-list {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+}
+
+.notice-item {
+   display: flex;
+   align-items: center;
+   padding: 12px;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.notice-item:last-child {
+   border-bottom: none;
+}
+
+.notice-img {
+   width: 45px;
+   height: 45px;
+   border-radius: 10px;
+   margin-right: 12px;
+   object-fit: cover;
+}
+
+.notice-content {
+   flex: 1;
+}
+
+.notice-title {
+   font-size: 14px;
+   font-weight: 500;
+   margin: 0;
+}
+
+.notice-date {
+   font-size: 12px;
+   color: #888;
+}
+
+.notice-views {
+   font-size: 12px;
+   color: #FF9F80;
+   font-weight: bold;
+}
+
+.students-chart {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding: 15px;
+   border-radius: 12px;
+   background: #fff;
+   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.students-legend {
+   margin-top: -10px;
+   text-align: center;
+}
+
+.students-legend p {
+   margin: 4px 0;
+   font-weight: 500;
+}
+
+.rightSide {
+   width: 300px;
+   padding: 10px;
+}
+
+/* Container card */
+.calendar-card {
+   background: #3b4a77;
+   /* dark blue background */
+   padding: 10px 15px;
+   border-radius: 16px;
+   color: white;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-card h3 {
+   text-align: left;
+   margin-bottom: 10px;
+   margin-top: 10px;
+   font-size: 18px;
+   font-weight: 600;
+}
+
+/* Base calendar */
+.react-calendar {
+   width: 100%;
+   border: none;
+   background: #3b4a77 !important;
+   border: none !important;
+   background: transparent;
+   font-family: "Arial", sans-serif;
+   color: white;
+}
+
+/* Month navigation */
+.react-calendar__navigation button {
+   color: #fff !important;
+   font-weight: bold;
+   font-size: 14px;
+   background: none;
+   border: none;
+   margin: 2px;
+   cursor: pointer;
+}
+
+.react-calendar__navigation button:disabled {
+   color: #c9c9c9 !important;
+}
+
+.react-calendar button:enabled:hover {
+   cursor: pointer;
+   background: #576489;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+   background-color: #3b568b !important;
+}
+
+/* Weekday labels */
+.react-calendar__month-view__weekdays {
+   text-transform: uppercase;
+   font-size: 12px;
+   text-decoration: none !important;
+   color: #fff;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+   text-align: center;
+   padding: 6px 0;
+}
+
+/* Days (tiles) */
+.react-calendar__tile {
+   background: none;
+   border: none;
+   color: #fff;
+   font-size: 14px;
+   border-radius: 8px;
+   padding: 10px;
+}
+
+.react-calendar__tile:enabled:hover {
+   background: rgba(255, 255, 255, 0.2);
+   cursor: pointer;
+}
+
+/* Selected day */
+.react-calendar__tile--active {
+   background: #ff9f68 !important;
+   /* orange */
+   color: white !important;
+   border-radius: 12px;
+}
+
+/* Today highlight */
+.react-calendar__tile--now {
+   background: rgba(255, 159, 104, 0.3);
+   border-radius: 12px;
+}
+
+/* Remove red weekends */
+.react-calendar__month-view__days__day--weekend {
+   color: red !important;
+}
