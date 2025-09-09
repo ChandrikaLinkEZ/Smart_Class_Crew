@@ -14,6 +14,22 @@ function ManageStudents() {
    const navigate = useNavigate();
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
    const [studentToDelete, setStudentToDelete] = useState(null);
+   const [currentPage, setCurrentPage] = useState(1);
+   const rowsPerPage = 5;
+
+   // Calculate indexes
+   const indexOfLastRow = currentPage * rowsPerPage;
+   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+   const currentStudents = students.slice(indexOfFirstRow, indexOfLastRow);
+
+   const totalPages = Math.ceil(students.length / rowsPerPage);
+
+   // Handle page change
+   const goToPage = (page) => {
+      if (page >= 1 && page <= totalPages) {
+         setCurrentPage(page);
+      }
+   };
 
    const handleLogout = () => {
       console.log("Logged out!");
@@ -149,31 +165,25 @@ function ManageStudents() {
                      <th>Name</th>
                      <th>Email</th>
                      <th>USN</th>
-                     <th>Edit</th>
-                     <th>Delete</th>
+                     <th style={{ textAlign: "center" }}>Edit</th>
+                     <th style={{ textAlign: "center" }}>Delete</th>
                   </tr>
                </thead>
                <tbody>
-                  {students.length > 0 ? (
-                     students.map((student, index) => (
+                  {currentStudents.length > 0 ? (
+                     currentStudents.map((student, index) => (
                         <tr key={student.id}>
-                           <td>{index + 1}</td>
+                           <td>{indexOfFirstRow + index + 1}</td>
                            <td>{student.name}</td>
                            <td>{student.email}</td>
                            <td>{student.usn}</td>
-                           <td>
-                              <button
-                                 onClick={() => handleEdit(student)}
-                                 className="text-blue-500 hover:text-blue-700"
-                              >
+                           <td style={{ textAlign: "center" }}>
+                              <button onClick={() => handleEdit(student)} className="edit-btn">
                                  <FaEdit />
                               </button>
                            </td>
-                           <td>
-                              <button
-                                 onClick={() => handleDelete(student)}
-                                 className="text-red-500 hover:text-red-700"
-                              >
+                           <td style={{ textAlign: "center" }}>
+                              <button onClick={() => handleDelete(student)} className="delete-btn">
                                  <FaTrash />
                               </button>
                            </td>
@@ -188,6 +198,17 @@ function ManageStudents() {
 
             </table>
 
+            {/* ✅ Pagination outside the table */}
+            <div className="pagination">
+               <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+                  Prev
+               </button>
+               <span> Page {currentPage} of {totalPages} </span>
+               <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                  Next
+               </button>
+            </div>
+            
             <button className="add-btn" onClick={handleSaveAll}>Save Student Details</button>
 
             <ToastContainer position="top-right" autoClose={3000} />
