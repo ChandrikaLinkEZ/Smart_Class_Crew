@@ -148,6 +148,35 @@
    font-weight: bold;
 }
 
+.holiday-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.holiday-table th,
+.holiday-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.holiday-table th {
+  background-color: #3c3c92;
+  color: white;
+}
+
+.holiday-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.holiday-table tr:hover {
+  background-color: #f1f1f1;
+}
+
 .students-chart {
    display: flex;
    flex-direction: column;

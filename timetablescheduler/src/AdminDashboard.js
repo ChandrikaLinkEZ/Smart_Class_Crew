@@ -64,11 +64,26 @@ function AdminDashboard() {
 
    // Fetch holidays
    useEffect(() => {
-      fetch("http://127.0.0.1:5000/api/holidays?year=2025")
-         .then(res => res.json())
-         .then(setHolidays)
-         .catch(err => console.error(err));
+      const fetchHolidays = async () => {
+         try {
+            const response = await fetch("http://127.0.0.1:5000/api/holidays");
+            const data = await response.json();
+            console.log("📅 Holidays:", data);
+
+            // Ensure always an array
+            if (Array.isArray(data)) {
+               setHolidays(data);
+            } else {
+               setHolidays([]);
+            }
+         } catch (error) {
+            console.error("Error fetching holidays:", error);
+            setHolidays([]);
+         }
+      };
+      fetchHolidays();
    }, []);
+
 
    const isHoliday = date =>
       holidays.some(h => h.date === date.toISOString().split("T")[0]);
@@ -126,7 +141,7 @@ function AdminDashboard() {
 
                   <div className="belowGrid">
                      {/* ✅ Notice Board */}
-                     <div className="notice-board card">
+                     {/* <div className="notice-board card">
                         <h3>Notice Board</h3>
                         <p className="subtitle">Create a notice or find messages for you!</p>
 
@@ -152,6 +167,41 @@ function AdminDashboard() {
                               </li>
                            ))}
                         </ul>
+                     </div> */}
+
+                     <div className="rightSide">
+                        <div className="calendar-card">
+                           <h3>Holiday List</h3>
+
+                           <table className="holiday-table">
+                              <thead>
+                                 <tr>
+                                    <th>Date</th>
+                                    <th>Holiday</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 {holidays.length > 0 ? (
+                                    holidays.map((holiday, index) => (
+                                       <tr key={index}>
+                                          <td>
+                                             {new Date(holiday.date).toLocaleDateString("en-GB", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric",
+                                             })}
+                                          </td>
+                                          <td>{holiday.title}</td>
+                                       </tr>
+                                    ))
+                                 ) : (
+                                    <tr>
+                                       <td colSpan="2">No holidays found</td>
+                                    </tr>
+                                 )}
+                              </tbody>
+                           </table>
+                        </div>
                      </div>
 
                      {/* ✅ Students Chart */}
@@ -191,21 +241,7 @@ function AdminDashboard() {
                         formatMonthYear={(locale, date) =>
                            date.toLocaleDateString(locale, { month: "short", year: "numeric" })
                         }
-                        tileClassName={({ date }) =>
-                           isHoliday(date) ? "holiday-tile" : ""
-                        }
                      />
-
-                     <div className="holiday-list">
-                        <h4>Upcoming Holidays</h4>
-                        <ul>
-                           {holidays.map((holiday, index) => (
-                              <li key={index}>
-                                 <b>{holiday.date}</b> - {holiday.title}
-                              </li>
-                           ))}
-                        </ul>
-                     </div>
                   </div>
                </div>
             </div>

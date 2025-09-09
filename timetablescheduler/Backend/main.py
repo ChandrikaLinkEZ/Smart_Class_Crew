@@ -4,9 +4,13 @@ from pydantic import BaseModel, EmailStr
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 import httpx 
-from fastapi import FastAPI
 
 app = FastAPI()
+
+API_KEY = "1234567890abcdef1234567890abcdef"
+year = datetime.now().year
+url = f"https://holidays.abstractapi.com/v1/?api_key={API_KEY}&country=IN&year={year}"
+print("🔑 API_KEY in use:", API_KEY)
 
 # Connect to MongoDB (FastAPI async driver)
 client = AsyncIOMotorClient("mongodb://localhost:27017")
@@ -15,7 +19,8 @@ db = client["smartclasscrew"]
 # Allow frontend origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],  # React app URL
+   #  allow_origins=["http://127.0.0.1:3000"], # React app URL
+    allow_origins=["*"], # React app URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,8 +33,7 @@ class LoginCredential(BaseModel):
 
 # ---------------- LOGIN ----------------
 @app.post("/api/login")
-async def login(payload: dict = Body(...)):
-    creds = LoginCredential(**payload["LoginCredential"])
+async def login(creds: LoginCredential):
     user = await db["user"].find_one({"email": creds.email, "role": creds.role})
 
     if not user:
@@ -42,6 +46,7 @@ async def login(payload: dict = Body(...)):
         student = await db["user"].find_one({"usn": creds.usn})
         if not student:
             raise HTTPException(status_code=401, detail="Invalid USN")
+         
 
     return {
         "message": "Login successful",
@@ -88,15 +93,26 @@ async def get_notices():
         notices.append(notice)
     return notices
  
- 
- #---------------HOLIDAYS---------------
+# --------------- HOLIDAYS ---------------
 @app.get("/api/holidays")
 async def get_holidays():
-    holidays = await db["holidays"].find().to_list(100)  # fetch max 100 holidays
-    return [
-        {
-            "date": h.get("date"),
-            "title": h.get("title")
-        }
-        for h in holidays
-    ]
+    year = datetime.now().year
+    API_KEY = "1234567890abcdef1234567890abcdef"  # replace with your real key
+    url = f"https://holidays.abstractapi.com/v1/?api_key={API_KEY}&country=IN&year={year}"
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url)
+            print("📅 Requesting:", url)
+            print("🌐 Status:", resp.status_code)
+            print("📦 Raw Response:", resp.text)
+
+        if resp.status_code != 200:
+         raise HTTPException(status_code=resp.status_code, detail="Holiday API failed")
+
+        data = resp.json()
+        return [{"date": h["date"], "name": h["name"]} for h in data]
+
+    except Exception as e:
+        print("❌ Backend Holiday Error:", str(e))
+        raise HTTPException(status_code=500, detail="Failed to fetch holidays")

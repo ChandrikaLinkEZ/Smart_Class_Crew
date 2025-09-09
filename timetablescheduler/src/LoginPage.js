@@ -7,17 +7,15 @@ function LoginPage() {
    const [email, setEmail] = useState("");
    const [role, setRole] = useState(""); // new state for role
    const [usn, setUSN] = useState(""); // new state for USN
+   const [errorMessage, setErrorMessage] = useState(""); // 👈 error state
+   const [successMessage, setSuccessMessage] = useState(""); // 👈 success state
 
    const handleLogin = async (e) => {
       e.preventDefault();
+      setErrorMessage(""); // clear before new login
+      setSuccessMessage("");
 
-      const payload = {
-         LoginCredential: {
-            email,
-            role,
-            usn,
-         },
-      };
+      const payload = { email, role, usn };
 
       try {
          const response = await fetch("http://localhost:5000/api/login", {
@@ -26,15 +24,20 @@ function LoginPage() {
             body: JSON.stringify(payload),
          });
 
-         if (!response.ok) throw new Error("Failed to login");
+         if (!response.ok) {
+            const errorData = await response.json();
+            setErrorMessage(errorData.detail || "Login failed"); // 👈 show inline error
+            return;
+         }
 
          const data = await response.json();
          console.log("Login success:", data);
 
-         // Redirect to Admin Dashboard
-         navigate("/dashboard");
+         setSuccessMessage("✅ Login successful! Redirecting...");
+         setTimeout(() => navigate("/dashboard"), 1500); // redirect after delay
       } catch (error) {
          console.error("Login error:", error);
+         setErrorMessage("❌ Could not connect to server");
       }
    };
 
@@ -43,6 +46,10 @@ function LoginPage() {
          <div className="login-card">
             <h1 className="login-title">Welcome To</h1>
             <p className="login-subtitle">Sign in to continue to <b>Smart Class Crew</b></p>
+
+            {/* ✅ Inline Alert */}
+            {errorMessage && <div className="alert error">{errorMessage}</div>}
+            {successMessage && <div className="alert success">{successMessage}</div>}
 
             <form className="login-form">
 

@@ -4,6 +4,40 @@
    overflow-y: hidden;
 }
 
+.alert {
+   margin: 10px 0;
+   padding: 12px;
+   border-radius: 6px;
+   font-size: 14px;
+   font-weight: 500;
+   animation: fadeIn 0.3s ease-in-out;
+}
+
+.alert.error {
+   background-color: #ffe0e0;
+   color: #b00020;
+   border: 1px solid #b00020;
+}
+
+.alert.success {
+   background-color: #e0ffe5;
+   color: #006b2d;
+   border: 1px solid #006b2d;
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(-5px);
+   }
+
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
+
 .login-container {
    min-height: 100vh;
    display: flex;
