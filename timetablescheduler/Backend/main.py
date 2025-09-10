@@ -144,7 +144,6 @@ class Student(BaseModel):
 db_students: List[Student] = []
 
 #--------------STUDENT BULK UPDATE-----------
-#--------------STUDENT BULK UPDATE-----------
 @app.put("/api/students/bulk-update")
 async def bulk_update_students(students: List[Student]):
     try:

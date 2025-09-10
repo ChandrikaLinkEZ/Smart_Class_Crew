@@ -206,6 +206,7 @@
 .calendar-card {
    background: #3b4a77;
    /* dark blue background */
+   flex: 1;
    padding: 10px 15px;
    border-radius: 16px;
    color: white;
