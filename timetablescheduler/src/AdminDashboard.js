@@ -169,39 +169,37 @@ function AdminDashboard() {
                         </ul>
                      </div> */}
 
-                     <div className="rightSide">
-                        <div className="calendar-card">
-                           <h3>Holiday List</h3>
+                     <div className="holiday-card">
+                        <h3>Holiday List</h3>
 
-                           <table className="holiday-table">
-                              <thead>
-                                 <tr>
-                                    <th>Date</th>
-                                    <th>Holiday</th>
-                                 </tr>
-                              </thead>
-                              <tbody>
-                                 {holidays.length > 0 ? (
-                                    holidays.map((holiday, index) => (
-                                       <tr key={index}>
-                                          <td>
-                                             {new Date(holiday.date).toLocaleDateString("en-GB", {
-                                                day: "2-digit",
-                                                month: "short",
-                                                year: "numeric",
-                                             })}
-                                          </td>
-                                          <td>{holiday.title}</td>
-                                       </tr>
-                                    ))
-                                 ) : (
-                                    <tr>
-                                       <td colSpan="2">No holidays found</td>
+                        <table className="holiday-table">
+                           <thead>
+                              <tr>
+                                 <th>Date</th>
+                                 <th>Holiday</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {holidays.length > 0 ? (
+                                 holidays.map((holiday, index) => (
+                                    <tr key={index}>
+                                       <td>
+                                          {new Date(holiday.date).toLocaleDateString("en-GB", {
+                                             day: "2-digit",
+                                             month: "short",
+                                             year: "numeric",
+                                          })}
+                                       </td>
+                                       <td>{holiday.title}</td>
                                     </tr>
-                                 )}
-                              </tbody>
-                           </table>
-                        </div>
+                                 ))
+                              ) : (
+                                 <tr>
+                                    <td colSpan="2">No holidays found</td>
+                                 </tr>
+                              )}
+                           </tbody>
+                        </table>
                      </div>
 
                      {/* ✅ Students Chart */}

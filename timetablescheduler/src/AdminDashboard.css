@@ -149,32 +149,32 @@
 }
 
 .holiday-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 10px;
+   background: #fff;
+   border-radius: 8px;
+   overflow: hidden;
 }
 
 .holiday-table th,
 .holiday-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
+   border: 1px solid #ddd;
+   padding: 10px;
+   text-align: left;
 }
 
 .holiday-table th {
-  background-color: #3c3c92;
-  color: white;
+   background-color: #3c3c92;
+   color: white;
 }
 
 .holiday-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+   background-color: #f9f9f9;
 }
 
 .holiday-table tr:hover {
-  background-color: #f1f1f1;
+   background-color: #f1f1f1;
 }
 
 .students-chart {
@@ -200,6 +200,23 @@
 .rightSide {
    width: 300px;
    padding: 10px;
+}
+
+.holiday-card {
+   background: #ffffff;
+   /* dark blue background */
+   flex: 1;
+   padding: 10px 15px;
+   border-radius: 16px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.holiday-card h3 {
+   text-align: left;
+   margin-bottom: 10px;
+   margin-top: 10px;
+   font-size: 18px;
+   font-weight: 600;
 }
 
 /* Container card */
