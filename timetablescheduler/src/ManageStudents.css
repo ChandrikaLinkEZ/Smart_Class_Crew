@@ -5,52 +5,121 @@
 }
 
 .tabs {
-  display: flex;
-  border-bottom: 2px solid #ccc;
-  margin-bottom: 20px;
+   display: flex;
+   border-bottom: 2px solid #ccc;
 }
 
 .tab {
-  padding: 10px 20px;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background: none;
-  font-size: 16px;
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s ease;
+   padding: 10px 20px;
+   cursor: pointer;
+   border: none;
+   outline: none;
+   background: none;
+   font-size: 16px;
+   border-bottom: 3px solid transparent;
+   transition: all 0.3s ease;
 }
 
 .tab:hover {
-  background: #f5f5f5;
+   background: #f5f5f5;
 }
 
 .tab.active-tab {
-  border-bottom: 3px solid #007bff; /* Highlight active tab */
-  font-weight: bold;
-  color: #007bff;
+   border-bottom: 3px solid #007bff;
+   /* Highlight active tab */
+   font-weight: bold;
+   color: #007bff;
+}
+
+.upload-btn {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 6px;
+   padding: 10px 18px;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   background-color: #fff;
+   color: #333;
+   font-size: 14px;
+   margin-left: 10px;
+   cursor: pointer;
+   transition: all 0.2s ease;
+}
+
+.upload-btn:hover {
+   background-color: #f5f5f5;
+   border-color: #999;
+}
+
+.upload-btn-container {
+   margin: 10px 0;
 }
 
 .student {
    flex: 1;
 }
 
+/* Base style for status column */
+.status-cell {
+   font-weight: 600;
+   padding: 6px 12px;
+   border-radius: 6px;
+   text-align: center;
+   width: 120px;
+}
+
+/* ✅ Success */
+.status-success {
+   color: #0a7d28;
+   /* dark green text */
+   background-color: #d4f8df;
+   /* light green background */
+}
+
+/* ❌ Error */
+.status-error {
+   color: #b00020;
+   /* dark red text */
+   background-color: #fbdada;
+   /* light red background */
+}
+
 .add-btn {
-   background: #004d73;
+   background-color: #004d73;
+   /* normal blue */
    color: white;
-   padding: 8px 12px;
+   padding: 10px 20px;
    border: none;
-   margin-bottom: 10px;
-   margin-left: 10px;
-   margin-top: 10px;
-   border-radius: 4px;
+   border-radius: 8px;
    cursor: pointer;
    display: block;
+   margin-top: 10px;
+   margin-left: 10px;
+   transition: background-color 0.3s;
+}
+
+.add-btn:hover:enabled {
+   background-color: #004d73;
+   /* hover effect only if enabled */
+}
+
+.add-btn:disabled,
+.add-btn.disabled-btn {
+   background-color: #c9c9c9;
+   /* grey when disabled */
+   cursor: not-allowed;
+}
+
+.belowButton {
+   display: flex;
+   margin-left: 10px;
+   column-gap: 10px;
 }
 
 .students-table {
    width: 98%;
-   margin: 0px 10px;
+   margin: 10px 10px 0px;
    border-collapse: collapse;
 }
 

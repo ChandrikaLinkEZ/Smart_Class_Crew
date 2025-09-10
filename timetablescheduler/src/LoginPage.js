@@ -34,6 +34,7 @@ function LoginPage() {
          console.log("Login success:", data);
 
          setSuccessMessage("✅ Login successful! Redirecting...");
+         localStorage.setItem("user", JSON.stringify(data.user)); 
          setTimeout(() => navigate("/dashboard"), 1500); // redirect after delay
       } catch (error) {
          console.error("Login error:", error);

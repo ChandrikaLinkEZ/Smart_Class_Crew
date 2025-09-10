@@ -1,0 +1,4 @@
+courseCode,courseName,credits,department,semester,type,status
+CS101,Data Structures,4,Computer Science,3,Core,Active
+CS102,Database Systems,3,Computer Science,4,Elective,Active
+MA101,Calculus,4,Mathematics,1,Core,Inactive

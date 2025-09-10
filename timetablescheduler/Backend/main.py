@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 import httpx 
 from typing import Optional, List
+from bson import ObjectId
 
 app = FastAPI()
 
@@ -130,7 +131,9 @@ async def get_students():
             "sl_no": student["sl_no"],
             "name": student.get("display_name"),
             "email": student.get("email"),
-            "usn": student.get("usn")
+            "usn": student.get("usn"),
+            "division": student.get("division"),
+            "gender": student.get("gender"),
         })
     return students
 
@@ -147,26 +150,194 @@ db_students: List[Student] = []
 @app.put("/api/students/bulk-update")
 async def bulk_update_students(students: List[Student]):
     try:
-        # Clear existing student documents (only role=student)
+        # Clear existing students
         await db["user"].delete_many({"role": "student"})
 
-        # Insert updated list
+        seen_emails, seen_usns = set(), set()
         new_students = []
-        for stu in students:
-            new_students.append({
-                "_id": stu.id,   # reuse frontend ID
-                "sl_no": students.index(stu) + 1,
+
+        for idx, stu in enumerate(students, start=1):
+            # Skip if duplicate within uploaded list
+            if stu.email in seen_emails or stu.usn in seen_usns:
+                continue
+            seen_emails.add(stu.email)
+            seen_usns.add(stu.usn)
+
+            student_doc = {
+                "_id": stu.id,
+                "sl_no": idx,
                 "display_name": stu.name,
                 "email": stu.email,
                 "usn": stu.usn,
                 "gender": stu.gender,
                 "role": "student"
-            })
+            }
+            new_students.append(student_doc)
 
         if new_students:
             await db["user"].insert_many(new_students)
 
-        return students
+        return {
+            "message": "Students updated successfully",
+            "inserted": len(new_students),
+            "skipped": len(students) - len(new_students)
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+# --------------- VALIDATE STUDENTS ----------------
+@app.post("/api/students/validate")
+async def validate_students(students: List[Student]):
+    try:
+        validated = []
+        for stu in students:
+            # Check if already exists in DB (by email or USN)
+            existing = await db["user"].find_one({
+                "$or": [
+                    {"email": stu.email},
+                    {"usn": stu.usn}
+                ],
+                "role": "student"
+            })
+
+            if existing:
+                status = "Duplicate"
+            else:
+                status = "Valid"
+
+            validated.append({
+                "id": stu.id,
+                "name": stu.name,
+                "email": stu.email,
+                "usn": stu.usn,
+                "gender": stu.gender,
+                "status": status
+            })
+
+        return validated
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
+# --------------- COMMIT DATA (Append new records) ----------------
+@app.post("/api/students/commitData")
+async def commit_students(students: List[Student]):
+    try:
+        new_students = []
+        for idx, stu in enumerate(students, start=1):
+            # Check for duplicates in user by email or usn
+            existing = await db["user"].find_one({
+                "$or": [{"email": stu.email}, {"usn": stu.usn}]
+            })
+            if existing:
+                continue  # Skip duplicates
+
+            student_doc = {
+                "_id": stu.id,
+                "sl_no": idx,
+                "display_name": stu.name,
+                "email": stu.email,
+                "usn": stu.usn,
+                "gender": stu.gender,
+                "role": "student"
+            }
+            new_students.append(student_doc)
+
+        if new_students:
+            await db["user"].insert_many(new_students)
+            await db["students"].insert_many(new_students)
+
+        return {
+            "message": "Students committed successfully",
+            "inserted": len(new_students),
+            "skipped": len(students) - len(new_students)
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+class Course(BaseModel):
+    id: str
+    courseCode: str
+    courseName: str
+    credits: int
+    department: str
+    semester: int
+    type: Optional[str] = None
+    status: Optional[str] = "Active"
+    
+# Get all courses
+@app.get("/api/courses")
+async def get_courses():
+    cursor = db["courses"].find()
+    courses = []
+    async for c in cursor:
+        courses.append({
+            "id": str(c["_id"]),
+            "courseCode": c.get("courseCode"),
+            "courseName": c.get("courseName"),
+            "credits": c.get("credits"),
+            "department": c.get("department"),
+            "semester": c.get("semester"),
+            "type": c.get("type"),
+            "status": c.get("status"),
+        })
+    return courses
+
+
+# Add or update a course
+@app.post("/api/courses/add")
+async def add_course(course: Course):
+    course_doc = course.dict(exclude_unset=True)
+    if course.id:  # update
+        result = await db["courses"].update_one(
+            {"_id": ObjectId(course.id)}, {"$set": course_doc}
+        )
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Course not found")
+        return {**course_doc, "id": course.id}
+    else:  # insert new
+        res = await db["courses"].insert_one(course_doc)
+        return {**course_doc, "id": str(res.inserted_id)}
+    
+    
+# Bulk update (for multiple edits/deletes at once)
+@app.put("/api/courses/bulk-update")
+async def bulk_update_courses(courses: List[Course]):
+    try:
+        await db["courses"].delete_many({})
+
+        new_courses = []
+        for idx, course in enumerate(courses, start=1):
+            new_courses.append({
+                "courseCode": course.courseCode,
+                "courseName": course.courseName,
+                "credits": course.credits,
+                "department": course.department,
+                "semester": course.semester,
+                "type": course.type,
+                "status": course.status,
+                "sl_no": idx,
+            })
+
+        if new_courses:
+            await db["courses"].insert_many(new_courses)
+
+        return {"message": "Courses updated successfully", "count": len(new_courses)}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
+# Delete a course
+@app.delete("/api/courses/{course_id}")
+async def delete_course(course_id: str):
+    result = await db["courses"].delete_one({"_id": ObjectId(course_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return {"message": "Deleted successfully"}
+

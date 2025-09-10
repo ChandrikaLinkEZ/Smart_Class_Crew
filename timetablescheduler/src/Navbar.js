@@ -2,7 +2,7 @@ import React, { useState } from "react"; // added useState import
 import "./Navbar.css";
 import { FaUser } from "react-icons/fa";
 
-function Navbar({ onLogout }) {   // ✅ accept onLogout as a prop
+function Navbar({ title = "Dashboard", user, onLogout }) {   // ✅ accept onLogout as a prop
    const [dropdownOpen, setDropdownOpen] = useState(false);
 
    const handleToggle = () => {
@@ -13,7 +13,7 @@ function Navbar({ onLogout }) {   // ✅ accept onLogout as a prop
       <nav className="navbar">
          {/* Left: Title */}
          <div className="navbar-left">
-            <h2>Admin Dashboard</h2>
+            <h2>{title}</h2> {/* ✅ dynamic title */}
          </div>
 
          {/* Right: Profile */}
@@ -21,7 +21,9 @@ function Navbar({ onLogout }) {   // ✅ accept onLogout as a prop
             <div className="profile" onClick={handleToggle}>
                <FaUser />
                <div className="profile-info">
-                  <span className="role">Admin</span>
+                  <span className="role">
+                     {user?.name || "Guest"}  {/* ✅ dynamic name */}
+                  </span>
                </div>
             </div>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import "./AdminDashboard.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { PieChart, Pie, Cell } from "recharts";
@@ -10,8 +10,8 @@ import { PieChart, Pie, Cell } from "recharts";
 const COLORS = ["#FF9F80", "#3C3C92"]; // Orange for Male, Blue for Female
 
 function AdminDashboard() {
+   const [user, setUser] = useState(null);
    const navigate = useNavigate();
-   const location = useLocation();
    const [stats, setStats] = useState({
       students_count: 0,
       teachers_count: 0,
@@ -21,13 +21,20 @@ function AdminDashboard() {
       female_percent: 0,
    });
    const [date, setDate] = useState(new Date());
-   const [notices, setNotices] = useState([]);
+   const [notice, setNotices] = useState([]);
    const [holidays, setHolidays] = useState([]);  // ✅ Add holidays state
 
    const handleLogout = () => {
       console.log("Logged out!");
       navigate("/");
    };
+
+   useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+         setUser(JSON.parse(storedUser));
+      }
+   }, []);
 
    const pieData = [
       { name: "Male", value: stats.male_students },
@@ -84,10 +91,6 @@ function AdminDashboard() {
       fetchHolidays();
    }, []);
 
-
-   const isHoliday = date =>
-      holidays.some(h => h.date === date.toISOString().split("T")[0]);
-
    return (
       <div className="admin-container">
          <aside className="sidebar">
@@ -104,13 +107,13 @@ function AdminDashboard() {
                   </NavLink>
                </li>
                <li>
-                  <NavLink to="/courses" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Courses
+                  <NavLink to="/students" className={({ isActive }) => (isActive ? "active" : "")}>
+                     Manage Students
                   </NavLink>
                </li>
                <li>
-                  <NavLink to="/students" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Students
+                  <NavLink to="/courses" className={({ isActive }) => (isActive ? "active" : "")}>
+                     Manage Courses
                   </NavLink>
                </li>
                <li>
@@ -127,7 +130,7 @@ function AdminDashboard() {
          </aside>
 
          <main className="dashboard">
-            <Navbar onLogout={handleLogout} />
+            <Navbar title="Dashboard" user={user} onLogout={handleLogout} />
 
             <div className="dashboardBody">
 
