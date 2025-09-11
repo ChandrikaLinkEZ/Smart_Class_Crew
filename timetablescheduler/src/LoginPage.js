@@ -34,7 +34,7 @@ function LoginPage() {
          console.log("Login success:", data);
 
          setSuccessMessage("✅ Login successful! Redirecting...");
-         localStorage.setItem("user", JSON.stringify(data.user)); 
+         localStorage.setItem("user", JSON.stringify(data.user));
          setTimeout(() => navigate("/dashboard"), 1500); // redirect after delay
       } catch (error) {
          console.error("Login error:", error);
@@ -43,84 +43,94 @@ function LoginPage() {
    };
 
    return (
-      <div className="login-container">
-         <div className="login-card">
-            <h1 className="login-title">Welcome To</h1>
-            <p className="login-subtitle">Sign in to continue to <b>Smart Class Crew</b></p>
+      <div className="login-wrapper">
+         {/* Left Branding Section */}
+         <div className="login-left">
+            <div className="brand">
+               <h1>Smart Class Crew</h1>
+               <p>Empowering Learning. Driving Collaboration.</p>
+            </div>
+         </div>
 
-            {/* ✅ Inline Alert */}
-            {errorMessage && <div className="alert error">{errorMessage}</div>}
-            {successMessage && <div className="alert success">{successMessage}</div>}
+         {/* Right Login Section */}
+         <div className="login-right">
+            <div className="form-box">
+               <h2 className="form-header">Welcome Back</h2>
+               <p className="form-subtitle">Please sign in to continue</p>
 
-            <form className="login-form">
+               {errorMessage && <div className="alert error">{errorMessage}</div>}
+               {successMessage && <div className="alert success">{successMessage}</div>}
 
-               {/* Role Dropdown */}
-               <div className="form-group">
-                  <label htmlFor="role">Role</label>
-                  <select
-                     id="role"
-                     value={role}
-                     onChange={(e) => setRole(e.target.value)}
-                     required
-                  >
-                     <option value="" disabled>
-                        Select your role
-                     </option>
-                     <option value="admin">Admin</option>
-                     <option value="teacher">Teacher</option>
-                     <option value="student">Student</option>
-                  </select>
-               </div>
-
-               {/* Email Input */}
-               <div className="form-group">
-                  <label htmlFor="email">Email</label>
-                  <input
-                     id="email"
-                     type="email"
-                     placeholder="you@example.com"
-                     value={email}
-                     onChange={(e) => setEmail(e.target.value)}
-                     required
-                  />
-               </div>
-
-               {/* USN Input - shown only if role is student */}
-               {role === "student" && (
+               <form onSubmit={handleLogin} className="login-form">
+                  {/* Role Dropdown */}
                   <div className="form-group">
-                     <label htmlFor="usn">USN</label>
+                     <label htmlFor="role">Choose Role</label>
+                     <select
+                        id="role"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        required
+                     >
+                        <option value="" disabled>Select your role</option>
+                        <option value="admin">Admin</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                     </select>
+                  </div>
+
+                  {/* Email Input */}
+                  <div className="form-group">
+                     <label htmlFor="email">Enter Email</label>
                      <input
-                        id="usn"
-                        type="text"
-                        placeholder="Enter USN"
-                        value={usn}
-                        onChange={(e) => setUSN(e.target.value.toUpperCase())} // 👈 always uppercase
-                        required={role === "student"}
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                      />
                   </div>
-               )}
 
-               <button type="submit" className="login-btn" onClick={handleLogin}>
-                  Sign In
-               </button>
-            </form>
+                  {/* USN Input */}
+                  {role === "student" && (
+                     <div className="form-group">
+                        <label htmlFor="usn">Enter USN</label>
+                        <input
+                           id="usn"
+                           type="text"
+                           placeholder="Enter USN"
+                           value={usn}
+                           onChange={(e) => setUSN(e.target.value.toUpperCase())}
+                           required
+                        />
+                     </div>
+                  )}
 
-            {/* <div className="divider">
-               <span>or</span>
+                  {/* Password Input with Eye Toggle */}
+                  {/* <div className="form-group password-wrapper">
+                     <label htmlFor="password">Password</label>
+                     <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter Password"
+                        required
+                     />
+                     <span
+                        className="toggle-password"
+                        onClick={() => setShowPassword(!showPassword)}
+                     >
+                        {showPassword ? "👁️" : "🙈"}
+                     </span>
+                  </div> */}
+
+                  <button type="submit" className="login-btn">Sign In</button>
+               </form>
+
             </div>
-
-            <div className="social-login">
-               <button className="social-btn google">Google</button>
-               <button className="social-btn facebook">Facebook</button>
-            </div>
-
-            <p className="signup-text">
-               Don’t have an account?{" "}
-               <a href="/register" className="signup-link">Sign up</a>
-            </p> */}
          </div>
       </div>
    );
+
 }
 
 export default LoginPage;

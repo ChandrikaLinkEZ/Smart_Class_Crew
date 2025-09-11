@@ -71,30 +71,48 @@ function GenerateTimetable() {
                   {/* Degree */}
                   <div className="generate-group">
                      <label>Degree</label>
-                     <select value={degree} onChange={(e) => setDegree(e.target.value)}>
-                        <option value="">Select Degree</option>
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                           <option key={num} value={num}>Semester {num}</option>
-                        ))}
-                     </select>
+                     <input
+                        id="degree"
+                        placeholder="Select Degree"
+                        value={degree}
+                        onChange={(e) => setDegree(e.target.value)}
+                        required
+                     >
+                     </input>
                   </div>
 
                   {/* Semester */}
                   <div className="generate-group">
                      <label>Semester</label>
-                     <select value={semester} onChange={(e) => setSemester(e.target.value)}>
-                        <option value="">Select Semester</option>
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                           <option key={num} value={num}>Semester {num}</option>
-                        ))}
+                     <select
+                        id="semester"
+                        placeholder="Select Semester"
+                        value={semester}
+                        onChange={(e) => setSemester(e.target.value)}
+                        required
+                     >
+                        <option value="" disabled hidden>Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
                      </select>
                   </div>
 
                   {/* Department */}
                   <div className="generate-group">
                      <label>Department</label>
-                     <select value={department} onChange={(e) => setDepartment(e.target.value)}>
-                        <option value="">Select Department</option>
+                     <select
+                        id="department"
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                        required
+                     >
+                        <option value="" disabled>Select Department</option>
                         <option value="CSE">Computer Science</option>
                         <option value="ECE">Electronics</option>
                         <option value="ME">Mechanical</option>
@@ -106,8 +124,13 @@ function GenerateTimetable() {
                   {/* Division */}
                   <div className="generate-group">
                      <label>Division</label>
-                     <select value={division} onChange={(e) => setDivision(e.target.value)}>
-                        <option value="">Select Division</option>
+                     <select
+                        id="division"
+                        value={division}
+                        onChange={(e) => setDivision(e.target.value)}
+                        required
+                     >
+                        <option value="" disabled>Select Division</option>
                         <option value="A">Division A</option>
                         <option value="B">Division B</option>
                         <option value="C">Division C</option>

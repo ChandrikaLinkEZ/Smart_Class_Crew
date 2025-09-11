@@ -1,0 +1,34 @@
+.sidebar {
+   width: 146px;
+   background: #0a3c62;
+   color: white;
+   padding: 7px;
+}
+
+.sidebar h2 {
+   margin-bottom: 20px;
+}
+
+.sidebar ul {
+   padding: 0px 0px;
+}
+
+.sidebar ul li a {
+   display: block;
+   padding: 10px 0px;
+   color: #fff;
+   text-decoration: none;
+   text-align: left;
+}
+
+.sidebar ul li a:hover {
+   background: #03458b;
+   padding-left: 0.25vw;
+}
+
+.sidebar ul li a.active {
+   background: #0964c5;
+   color: white;
+   font-weight: bold;
+   /* border-radius: 5px; */
+}

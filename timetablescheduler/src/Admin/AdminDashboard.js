@@ -21,8 +21,7 @@ function AdminDashboard() {
       female_percent: 0,
    });
    const [date, setDate] = useState(new Date());
-   // const [notice, setNotices] = useState([]);
-   const [holidays, setHolidays] = useState([]);  // ✅ Add holidays state
+   const [holidays, setHolidays] = useState([]);
 
    const handleLogout = () => {
       console.log("Logged out!");
@@ -55,29 +54,12 @@ function AdminDashboard() {
       fetchStats();
    }, []);
 
-   // Fetch notices
-   // useEffect(() => {
-   //    const fetchNotices = async () => {
-   //       try {
-   //          const response = await fetch("http://127.0.0.1:5000/api/notices");
-   //          const data = await response.json();
-   //          setNotices(data);
-   //       } catch (error) {
-   //          console.error("Error fetching Notices:", error);
-   //       }
-   //    };
-   //    fetchNotices();
-   // }, []);
-
    // Fetch holidays
    useEffect(() => {
       const fetchHolidays = async () => {
          try {
             const response = await fetch("http://127.0.0.1:5000/api/holidays");
             const data = await response.json();
-            console.log("📅 Holidays:", data);
-
-            // Ensure always an array
             if (Array.isArray(data)) {
                setHolidays(data);
             } else {
@@ -99,7 +81,7 @@ function AdminDashboard() {
             <Navbar title="Dashboard" user={user} onLogout={handleLogout} />
 
             <div className="dashboardBody">
-
+               {/* Left side */}
                <div className="leftSide">
                   <div className="card-grid">
                      <div className="card"><p>Students</p><b>{stats.students_count || 0}</b></div>
@@ -109,38 +91,8 @@ function AdminDashboard() {
                   </div>
 
                   <div className="belowGrid">
-                     {/* ✅ Notice Board */}
-                     {/* <div className="notice-board card">
-                        <h3>Notice Board</h3>
-                        <p className="subtitle">Create a notice or find messages for you!</p>
-
-                        <ul className="notice-list">
-                           {notices.map((notice, index) => (
-                              <li key={index} className="notice-item">
-                                 {notice.image && (
-                                    <img src={notice.image} alt="notice" className="notice-img" />
-                                 )}
-                                 <div className="notice-content">
-                                    <p className="notice-title">{notice.title}</p>
-                                    <span className="notice-date">
-                                       {new Date(notice.date).toLocaleDateString("en-GB", {
-                                          day: "numeric",
-                                          month: "short",
-                                          year: "numeric",
-                                       })}
-                                    </span>
-                                 </div>
-                                 <div className="notice-views">
-                                    <span className="views">{notice.views}</span>
-                                 </div>
-                              </li>
-                           ))}
-                        </ul>
-                     </div> */}
-
                      <div className="holiday-card">
                         <h3>Holiday List</h3>
-
                         <div className="holiday-table-wrapper">
                            <table className="holiday-table">
                               <thead>
@@ -175,17 +127,16 @@ function AdminDashboard() {
                         </div>
                      </div>
 
-                     {/* ✅ Students Chart */}
                      <div className="students-chart card">
                         <h3>Students</h3>
-                        <PieChart width={250} height={260}>
+                        <PieChart width={230} height={250}>
                            <Pie
                               data={pieData}
                               cx="50%"
                               cy="50%"
                               isAnimationActive={true}
-                              innerRadius={80}
-                              outerRadius={120}
+                              innerRadius={70}
+                              outerRadius={110}
                               paddingAngle={3}
                               dataKey="value"
                            >
@@ -203,8 +154,8 @@ function AdminDashboard() {
                   </div>
                </div>
 
+               {/* Right side */}
                <div className="rightSide">
-                  {/* ✅ Calendar with Holidays */}
                   <div className="calendar-card">
                      <h3>Event Calendar</h3>
                      <Calendar

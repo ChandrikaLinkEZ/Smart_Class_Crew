@@ -54,7 +54,9 @@ async def login(creds: LoginCredential):
         if not creds.usn:
             raise HTTPException(status_code=400, detail="USN is required for students")
 
-        student = await db["user"].find_one({"usn": creds.usn})
+        entered_usn = creds.usn.strip().lower()  # normalize to lowercase
+
+        student = await db["user"].find_one({"usn": entered_usn})
         if not student:
             raise HTTPException(status_code=401, detail="Invalid USN")
          
@@ -130,7 +132,6 @@ async def get_notices():
 
 # --------------- HOLIDAYS ---------------
 #usage:  http://127.0.0.1:5000/api/holidays
-@app.get("/api/holidays")
 @app.get("/api/holidays")
 async def get_holidays():
     year = datetime.now().year

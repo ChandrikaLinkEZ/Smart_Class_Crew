@@ -1,212 +1,97 @@
 .admin-container {
    display: flex;
-   height: 100vh;
-   background: #f5f7fa;
-}
-
-.sidebar {
-   width: 144px;
-   background: #0a3c62;
-   color: white;
-   padding: 7px;
-}
-
-.sidebar h2 {
-   margin-bottom: 20px;
-}
-
-.sidebar ul {
-   padding: 0px 0px;
-}
-
-.sidebar ul li a {
-   display: block;
-   padding: 10px 0px;
-   color: #fff;
-   text-decoration: none;
-   text-align: left;
-}
-
-.sidebar ul li a:hover {
-   background: #03458b;
-   padding-left: 0.25vw;
-}
-
-.sidebar ul li a.active {
-   background: #0964c5;
-   color: white;
-   font-weight: bold;
-   /* border-radius: 5px; */
+   overflow-x: hidden;
+   overflow-y: hidden !important;
 }
 
 .dashboard {
    flex: 1;
+   display: flex;
+   flex-direction: column;
+   overflow: hidden;
 }
 
 .dashboardBody {
+   flex: 1;
    display: flex;
+   padding: 10px 0px;
+   overflow: hidden;
 }
 
 .leftSide {
-   width: calc(100% - 300px);
-}
-
-.card-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-   gap: 20px;
-   margin-top: 10px;
-   padding: 0px 20px;
-   padding-bottom: 5px;
-}
-
-.card {
-   background: white;
-   padding: 10px 20px;
-   border-radius: 10px;
-   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-   text-align: center;
-   align-content: center;
-}
-
-.card p {
-   margin: 0;
-
-}
-
-.belowGrid {
-   display: flex;
-   margin: 0px 20px;
-   padding: 10px 0px;
-   column-gap: 20px;
-}
-
-.notice-board {
-   background: #fff;
-   padding: 20px;
-   flex: 1;
-   align-content: baseline;
-   border-radius: 16px;
-   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.notice-board h3 {
-   font-size: 18px;
-   margin-bottom: 4px;
-   text-align: left;
-}
-
-.subtitle {
-   font-size: 12px;
-   color: #666;
-   margin-bottom: 15px;
-}
-
-.notice-list {
-   list-style: none;
-   padding: 0;
-   margin: 0;
-}
-
-.notice-item {
-   display: flex;
-   align-items: center;
-   padding: 12px;
-   border-bottom: 1px solid #f0f0f0;
-}
-
-.notice-item:last-child {
-   border-bottom: none;
-}
-
-.notice-img {
-   width: 45px;
-   height: 45px;
-   border-radius: 10px;
-   margin-right: 12px;
-   object-fit: cover;
-}
-
-.notice-content {
-   flex: 1;
-}
-
-.notice-title {
-   font-size: 14px;
-   font-weight: 500;
-   margin: 0;
-}
-
-.notice-date {
-   font-size: 12px;
-   color: #888;
-}
-
-.notice-views {
-   font-size: 12px;
-   color: #FF9F80;
-   font-weight: bold;
-}
-
-.holiday-table tr:nth-child(even) {
-   background-color: #f9f9f9;
-}
-
-.holiday-table tr:hover {
-   background-color: #f1f1f1;
-}
-
-.students-chart {
+   flex: 2;
    display: flex;
    flex-direction: column;
-   align-items: center;
-   padding: 15px;
-   border-radius: 12px;
-   background: #fff;
-   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.students-legend {
-   margin-top: -10px;
-   text-align: center;
-}
-
-.students-legend p {
-   margin: 4px 0;
-   font-weight: 500;
-}
-
-.recharts-wrapper {
-   position: relative;
-   width: 250px;
-   height: 250px;
-   overflow-y: hidden;
+   gap: 10px;
+   overflow: hidden;
 }
 
 .rightSide {
-   width: 300px;
-   padding: 10px;
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   overflow: hidden;
 }
 
+/* Stat Cards */
+.card-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 10px;
+   margin: 0px 10px;
+}
+
+.card {
+   background: linear-gradient(135deg, rgba(13, 27, 61, 0.9), rgba(26, 115, 232, 0.8));
+   color: white;
+   border-radius: 20px;
+   padding: 10px;
+   text-align: center;
+   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+   transition: transform 0.3s ease;
+}
+
+.card p {
+   font-size: 1rem;
+   opacity: 0.85;
+}
+
+.card b {
+   font-size: 2.2rem;
+   font-weight: 700;
+   display: block;
+   margin-top: 10px;
+}
+
+/* Below Grid Layout */
+.belowGrid {
+   flex: 2 1;
+   margin: 0px 10px 9px 10px;
+   display: grid;
+   grid-template-columns: 2fr 1fr;
+   gap: 10px;
+   min-height: 0;
+}
+
+/* Holiday Card */
 .holiday-card {
    background: #ffffff;
    flex: 1;
-   padding: 10px 15px;
+   padding: 0px 10px;
    border-radius: 16px;
    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .holiday-card h3 {
-   text-align: left;
+   font-size: 1.2rem;
+   margin-bottom: 12px;
+   color: #0d1b3d;
 }
 
 .holiday-table-wrapper {
-   max-height: 52vh;
-   /* limit height */
+   max-height: 50vh;
    overflow-y: auto;
-   /* enable vertical scroll */
-   border: 1px solid #ddd;
-   /* optional */
 }
 
 .holiday-table {
@@ -214,121 +99,91 @@
    border-collapse: collapse;
 }
 
-.holiday-table th,
-.holiday-table td {
-   padding: 8px;
-   border: 1px solid #ddd;
-   text-align: left;
+.holiday-table-wrapper thead {
+   overflow-y: sticky;
+}
+
+.holiday-table th {
+   background: #0d1b3d;
+   color: white;
+   padding: 12px;
 }
 
 .holiday-table thead th {
-   background-color: #3c3c92;
    color: white;
    position: sticky;
    top: 0;
-   /* stick header to top */
    z-index: 10;
-   /* ensure it stays above rows */
 }
 
-/* Container card */
-.calendar-card {
-   background: #3b4a77;
-   /* dark blue background */
+.holiday-table td {
+   padding: 12px;
+   font-size: 0.95rem;
+}
+
+.holiday-table tr:nth-child(even) {
+   background: #f5f7fb;
+}
+
+.holiday-table tr:hover {
+   background: #eaf2fe;
+}
+
+/* Students Chart */
+.students-chart {
+   background: #fff;
+   border-radius: 20px;
+   padding: 0px 10px;
+   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+   text-align: center;
    flex: 1;
-   padding: 10px 15px;
+   min-height: 0;
+   overflow: hidden;
+}
+
+.students-chart h3 {
+   margin-bottom: 0px;
+   color: #0d1b3d;
+}
+
+.students-legend {
+   display: flex;
+   justify-content: center;
+   gap: 20px;
+}
+
+/* Calendar */
+.calendar-card {
+   margin: 1px 20px 10px 10px;
+   backdrop-filter: blur(10px);
+   background: #ffffff;
+   flex: 1;
+   padding: 0px 10px;
    border-radius: 16px;
-   color: white;
    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.calendar-card h3 {
-   text-align: left;
-   margin-bottom: 10px;
-   margin-top: 10px;
-   font-size: 18px;
-   font-weight: 600;
-}
-
-/* Base calendar */
 .react-calendar {
-   width: 100%;
-   border: none;
-   background: #3b4a77 !important;
    border: none !important;
-   background: transparent;
-   font-family: "Arial", sans-serif;
-   color: white;
+   width: 100% !important;
+   font-family: inherit;
 }
 
-/* Month navigation */
-.react-calendar__navigation button {
-   color: #fff !important;
-   font-weight: bold;
-   font-size: 14px;
-   background: none;
-   border: none;
-   margin: 2px;
-   cursor: pointer;
-}
-
-.react-calendar__navigation button:disabled {
-   color: #c9c9c9 !important;
-}
-
-.react-calendar button:enabled:hover {
-   cursor: pointer;
-   background: #576489;
-}
-
-.react-calendar__navigation button:enabled:hover,
-.react-calendar__navigation button:enabled:focus {
-   background-color: #3b568b !important;
-}
-
-/* Weekday labels */
-.react-calendar__month-view__weekdays {
-   text-transform: uppercase;
-   font-size: 12px;
-   text-decoration: none !important;
-   color: #fff;
-}
-
-.react-calendar__month-view__weekdays__weekday {
-   text-align: center;
-   padding: 6px 0;
-}
-
-/* Days (tiles) */
-.react-calendar__tile {
-   background: none;
-   border: none;
-   color: #fff;
-   font-size: 14px;
-   border-radius: 8px;
-   padding: 10px;
-}
-
-.react-calendar__tile:enabled:hover {
-   background: rgba(255, 255, 255, 0.2);
-   cursor: pointer;
-}
-
-/* Selected day */
 .react-calendar__tile--active {
-   background: #ff9f68 !important;
-   /* orange */
+   background: #1a73e8 !important;
    color: white !important;
-   border-radius: 12px;
+   border-radius: 50%;
+   font-weight: bold;
 }
 
-/* Today highlight */
 .react-calendar__tile--now {
-   background: rgba(255, 159, 104, 0.3);
-   border-radius: 12px;
+   background: rgba(26, 115, 232, 0.1) !important;
+   border-radius: 50%;
+   font-weight: bold;
+   color: #1a73e8;
 }
 
-/* Remove red weekends */
-.react-calendar__month-view__days__day--weekend {
-   color: red !important;
+.react-calendar__tile:hover {
+   background: #eaf2fe !important;
+   border-radius: 50%;
 }
