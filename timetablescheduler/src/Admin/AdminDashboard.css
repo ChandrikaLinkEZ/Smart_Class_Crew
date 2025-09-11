@@ -177,10 +177,19 @@
 }
 
 .react-calendar__tile--now {
-   background: rgba(26, 115, 232, 0.1) !important;
+   background: #1a73e8 !important;
+   color: white !important;
    border-radius: 50%;
    font-weight: bold;
-   color: #1a73e8;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.react-calendar__tile--active:not(.react-calendar__tile--now) {
+   background: #0d47a1 !important;
+   /* Darker blue for selected */
+   color: white !important;
+   border-radius: 50%;
+   font-weight: bold;
 }
 
 .react-calendar__tile:hover {
