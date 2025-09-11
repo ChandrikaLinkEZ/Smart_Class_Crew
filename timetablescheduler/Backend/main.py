@@ -80,6 +80,10 @@ async def get_stats():
 
     male_students = await db["user"].count_documents({"role": "student", "gender": "male"})
     female_students = await db["user"].count_documents({"role": "student", "gender": "female"})
+    
+    total_courses = await db["courses"].count_documents({"status": "Active"})
+    total_divisions = len(await db["user"].distinct("division"))
+    print(total_divisions)  # e.g., 4
 
     male_percent = (male_students / students_count * 100) if students_count > 0 else 0
     female_percent = (female_students / students_count * 100) if students_count > 0 else 0
@@ -91,20 +95,22 @@ async def get_stats():
         "female_students": female_students,
         "male_percent": round(male_percent, 2),
         "female_percent": round(female_percent, 2),
+        "total_courses": total_courses,
+        "total_divisions": total_divisions
     }
 
 # ---------------- NOTICES ----------------
-@app.get("/api/notices")
-async def get_notices():
-    notices_cursor = db["notices"].find()
-    notices = []
-    async for notice in notices_cursor:
-        notice["_id"] = str(notice["_id"])
-        # Ensure date is string (YYYY-MM-DD)
-        if isinstance(notice["date"], datetime):
-            notice["date"] = notice["date"].strftime("%Y-%m-%d")
-        notices.append(notice)
-    return notices
+# @app.get("/api/notices")
+# async def get_notices():
+#     notices_cursor = db["notices"].find()
+#     notices = []
+#     async for notice in notices_cursor:
+#         notice["_id"] = str(notice["_id"])
+#         # Ensure date is string (YYYY-MM-DD)
+#         if isinstance(notice["date"], datetime):
+#             notice["date"] = notice["date"].strftime("%Y-%m-%d")
+#         notices.append(notice)
+#     return notices
  
 # # --------------- HOLIDAYS ---------------
 # @app.get("/api/holidays")
@@ -399,6 +405,7 @@ async def create_teacher(teacher: Teacher):
         "department": teacher.department,
         "coursename": teacher.coursename,
         "coursecode": teacher.coursecode,
+        "credits": teacher.credits,
         "role": "teacher"
     }
 

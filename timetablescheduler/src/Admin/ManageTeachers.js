@@ -178,6 +178,7 @@ function ManageTeachers() {
                         <tr>
                            <th>Sl No</th>
                            <th>Teacher Name</th>
+                           <th>Email</th>
                            <th>Course Code</th>
                            <th>Course Name</th>
                            <th>Credits</th>
@@ -191,9 +192,10 @@ function ManageTeachers() {
                         {currentTeachers.map((teacher, index) => (
                            <tr key={teacher.id}>
                               <td>{indexOfFirstRow + index + 1}</td>
-                              <td>{teacher.courseName}</td>
-                              <td>{teacher.courseCode}</td>
-                              <td>{teacher.courseName}</td>
+                              <td>{teacher.name}</td>
+                              <td>{teacher.email}</td>
+                              <td>{teacher.coursecode}</td>
+                              <td>{teacher.coursename}</td>
                               <td>{teacher.credits}</td>
                               <td>{teacher.department}</td>
                               <td>{teacher.status}</td>
