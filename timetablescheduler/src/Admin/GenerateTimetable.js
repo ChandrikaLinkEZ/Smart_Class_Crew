@@ -12,7 +12,7 @@ function GenerateTimetable() {
    const [degree, setDegree] = useState("");
    const [department, setDepartment] = useState("");
    const [division, setDivision] = useState("");
-   const [loading, setLoading] = useState(false);
+   const [setLoading] = useState(false);
    const [timetable, setTimetable] = useState(null);
 
    const handleLogout = () => {
