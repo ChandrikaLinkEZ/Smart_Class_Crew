@@ -148,27 +148,6 @@
    font-weight: bold;
 }
 
-.holiday-table {
-   width: 100%;
-   border-collapse: collapse;
-   margin-top: 10px;
-   background: #fff;
-   border-radius: 8px;
-   overflow: hidden;
-}
-
-.holiday-table th,
-.holiday-table td {
-   border: 1px solid #ddd;
-   padding: 10px;
-   text-align: left;
-}
-
-.holiday-table th {
-   background-color: #3c3c92;
-   color: white;
-}
-
 .holiday-table tr:nth-child(even) {
    background-color: #f9f9f9;
 }
@@ -204,7 +183,6 @@
 
 .holiday-card {
    background: #ffffff;
-   /* dark blue background */
    flex: 1;
    padding: 10px 15px;
    border-radius: 16px;
@@ -213,10 +191,37 @@
 
 .holiday-card h3 {
    text-align: left;
-   margin-bottom: 10px;
-   margin-top: 10px;
-   font-size: 18px;
-   font-weight: 600;
+}
+
+.holiday-table-wrapper {
+   max-height: 200px;
+   /* limit height */
+   overflow-y: auto;
+   /* enable vertical scroll */
+   border: 1px solid #ddd;
+   /* optional */
+}
+
+.holiday-table {
+   width: 100%;
+   border-collapse: collapse;
+}
+
+.holiday-table th,
+.holiday-table td {
+   padding: 8px;
+   border: 1px solid #ddd;
+   text-align: left;
+}
+
+.holiday-table thead th {
+   background-color: #3c3c92;
+   color: white;
+   position: sticky;
+   top: 0;
+   /* stick header to top */
+   z-index: 10;
+   /* ensure it stays above rows */
 }
 
 /* Container card */

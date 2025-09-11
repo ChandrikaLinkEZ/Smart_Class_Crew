@@ -21,7 +21,7 @@ function AdminDashboard() {
       female_percent: 0,
    });
    const [date, setDate] = useState(new Date());
-   const [notice, setNotices] = useState([]);
+   // const [notice, setNotices] = useState([]);
    const [holidays, setHolidays] = useState([]);  // ✅ Add holidays state
 
    const handleLogout = () => {
@@ -56,18 +56,18 @@ function AdminDashboard() {
    }, []);
 
    // Fetch notices
-   useEffect(() => {
-      const fetchNotices = async () => {
-         try {
-            const response = await fetch("http://127.0.0.1:5000/api/notices");
-            const data = await response.json();
-            setNotices(data);
-         } catch (error) {
-            console.error("Error fetching Notices:", error);
-         }
-      };
-      fetchNotices();
-   }, []);
+   // useEffect(() => {
+   //    const fetchNotices = async () => {
+   //       try {
+   //          const response = await fetch("http://127.0.0.1:5000/api/notices");
+   //          const data = await response.json();
+   //          setNotices(data);
+   //       } catch (error) {
+   //          console.error("Error fetching Notices:", error);
+   //       }
+   //    };
+   //    fetchNotices();
+   // }, []);
 
    // Fetch holidays
    useEffect(() => {
@@ -136,10 +136,10 @@ function AdminDashboard() {
 
                <div className="leftSide">
                   <div className="card-grid">
-                     <div className="card"><p>Students</p><b>{stats.students_count}</b></div>
-                     <div className="card"><p>Teachers</p><b>{stats.teachers_count}</b></div>
-                     <div className="card"><p>Manage Timeslots</p><b>Go</b></div>
-                     <div className="card"><p>Generate Timetable</p><b>Go</b></div>
+                     <div className="card"><p>Students</p><b>{stats.students_count || 0}</b></div>
+                     <div className="card"><p>Teachers</p><b>{stats.teachers_count || 0}</b></div>
+                     <div className="card"><p>Total Courses</p><b>{stats.courses || 0}</b></div>
+                     <div className="card"><p>Total Divisions</p><b>{stats.divisions || 0}</b></div>
                   </div>
 
                   <div className="belowGrid">
@@ -175,34 +175,38 @@ function AdminDashboard() {
                      <div className="holiday-card">
                         <h3>Holiday List</h3>
 
-                        <table className="holiday-table">
-                           <thead>
-                              <tr>
-                                 <th>Date</th>
-                                 <th>Holiday</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {holidays.length > 0 ? (
-                                 holidays.map((holiday, index) => (
-                                    <tr key={index}>
-                                       <td>
-                                          {new Date(holiday.date).toLocaleDateString("en-GB", {
-                                             day: "2-digit",
-                                             month: "short",
-                                             year: "numeric",
-                                          })}
-                                       </td>
-                                       <td>{holiday.title}</td>
-                                    </tr>
-                                 ))
-                              ) : (
+                        <div className="holiday-table-wrapper">
+                           <table className="holiday-table">
+                              <thead>
                                  <tr>
-                                    <td colSpan="2">No holidays found</td>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Holiday</th>
                                  </tr>
-                              )}
-                           </tbody>
-                        </table>
+                              </thead>
+                              <tbody>
+                                 {holidays.length > 0 ? (
+                                    holidays.map((holiday, index) => (
+                                       <tr key={index}>
+                                          <td>
+                                             {new Date(holiday.date).toLocaleDateString("en-GB", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric",
+                                             })}
+                                          </td>
+                                          <td>{holiday.day}</td>
+                                          <td>{holiday.name}</td>
+                                       </tr>
+                                    ))
+                                 ) : (
+                                    <tr>
+                                       <td colSpan="3">No holidays found</td>
+                                    </tr>
+                                 )}
+                              </tbody>
+                           </table>
+                        </div>
                      </div>
 
                      {/* ✅ Students Chart */}
