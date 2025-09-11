@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import LoginPage from './LoginPage';
-import AdminDashboard from './AdminDashboard';
-import ManageStudents from './ManageStudents';
-import ManageCourse from './ManageCourse';
-import GenerateTimetable from './GenerateTimetable';
+import AdminDashboard from './Admin/AdminDashboard';
+import ManageStudents from './Admin/ManageStudents';
+import ManageCourse from './Admin/ManageCourse';
+import GenerateTimetable from './Admin/GenerateTimetable';
+import GeneratedTimetables from "./Admin/GeneratedTimetables";
 
 function App() {
   
@@ -16,7 +17,8 @@ function App() {
           <Route path="/dashboard" element={<AdminDashboard />} />
           <Route path="/students" element={<ManageStudents />} />
           <Route path="/courses" element={<ManageCourse />} />
-          <Route path="/timetable" element={<GenerateTimetable />} />
+          <Route path="/createTimetable" element={<GenerateTimetable />} />
+          <Route path="/timetables" element={<GeneratedTimetables />} />
         </Routes>
       </Router>
     </div>

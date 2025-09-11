@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../Refs/Navbar";
+import SideBar from "../Refs/SideBar";
 import "./AdminDashboard.css";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { PieChart, Pie, Cell } from "recharts";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const COLORS = ["#FF9F80", "#3C3C92"]; // Orange for Male, Blue for Female
 
@@ -93,41 +93,7 @@ function AdminDashboard() {
 
    return (
       <div className="admin-container">
-         <aside className="sidebar">
-            <h2>Admin Panel</h2>
-            <ul>
-               <li>
-                  <NavLink to="/dashboard" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Dashboard
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/teachers" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Teachers
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/students" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Students
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/courses" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Courses
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/timetable" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Generate Timetable
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/settings" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Settings
-                  </NavLink>
-               </li>
-            </ul>
-         </aside>
+         <SideBar />
 
          <main className="dashboard">
             <Navbar title="Dashboard" user={user} onLogout={handleLogout} />
@@ -212,20 +178,22 @@ function AdminDashboard() {
                      {/* ✅ Students Chart */}
                      <div className="students-chart card">
                         <h3>Students</h3>
-                        <PieChart width={250} height={250}>
+                        <PieChart width={250} height={260}>
                            <Pie
                               data={pieData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={60}
-                              outerRadius={90}
-                              paddingAngle={5}
+                              isAnimationActive={true}
+                              innerRadius={80}
+                              outerRadius={120}
+                              paddingAngle={3}
                               dataKey="value"
                            >
                               {pieData.map((entry, index) => (
                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                               ))}
                            </Pie>
+                           <Tooltip />
                         </PieChart>
                         <div className="students-legend">
                            <p style={{ color: COLORS[0] }}>Male {stats.male_percent}%</p>

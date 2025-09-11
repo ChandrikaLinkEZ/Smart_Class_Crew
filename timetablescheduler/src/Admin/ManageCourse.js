@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./ManageCourse.css"; // reuse same theme
-import { NavLink } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../Refs/Navbar";
+import SideBar from "../Refs/SideBar";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -130,41 +130,7 @@ function ManageCourses() {
 
    return (
       <div className="manage-container">
-         <aside className="sidebar">
-            <h2>Admin Panel</h2>
-            <ul>
-               <li>
-                  <NavLink to="/dashboard" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Dashboard
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/teachers" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Teachers
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/students" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Students
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/courses" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Manage Courses
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/timetable" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Generate Timetable
-                  </NavLink>
-               </li>
-               <li>
-                  <NavLink to="/settings" className={({ isActive }) => (isActive ? "active" : "")}>
-                     Settings
-                  </NavLink>
-               </li>
-            </ul>
-         </aside>
+         <SideBar />
 
          <div className="student">
             <Navbar title="Manage Courses" user={user} onLogout={handleLogout} />

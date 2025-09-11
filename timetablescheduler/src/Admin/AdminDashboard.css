@@ -176,6 +176,13 @@
    font-weight: 500;
 }
 
+.recharts-wrapper {
+   position: relative;
+   width: 250px;
+   height: 250px;
+   overflow-y: hidden;
+}
+
 .rightSide {
    width: 300px;
    padding: 10px;
@@ -194,7 +201,7 @@
 }
 
 .holiday-table-wrapper {
-   max-height: 200px;
+   max-height: 52vh;
    /* limit height */
    overflow-y: auto;
    /* enable vertical scroll */
