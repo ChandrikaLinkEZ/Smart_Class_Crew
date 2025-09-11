@@ -9,6 +9,15 @@ from bson import ObjectId
 
 app = FastAPI()
 
+# Define Teacher model here or import from models file
+class Teacher(BaseModel):
+    id: str
+    name: str
+    email: EmailStr
+    department: Optional[str] = None
+    coursename: str
+    coursecode: str
+
 API_KEY = "1234567890abcdef1234567890abcdef"
 year = datetime.now().year
 url = f"https://holidays.abstractapi.com/v1/?api_key={API_KEY}&country=IN&year={year}"
@@ -95,12 +104,39 @@ async def get_notices():
         notices.append(notice)
     return notices
  
+# # --------------- HOLIDAYS ---------------
+# @app.get("/api/holidays")
+# async def get_holidays():
+#     year = datetime.now().year
+#     API_KEY = "1234567890abcdef1234567890abcdef"  # replace with your real key
+#     url = f"https://holidays.abstractapi.com/v1/?api_key={API_KEY}&country=IN&year={year}"
+
+#     try:
+#         async with httpx.AsyncClient() as client:
+#             resp = await client.get(url)
+#             print("📅 Requesting:", url)
+#             print("🌐 Status:", resp.status_code)
+#             print("📦 Raw Response:", resp.text)
+
+#         if resp.status_code != 200:
+#          raise HTTPException(status_code=resp.status_code, detail="Holiday API failed")
+
+#         data = resp.json()
+#         return [{"date": h["date"], "name": h["name"]} for h in data]
+
+#     except Exception as e:
+#         print("❌ Backend Holiday Error:", str(e))
+#         raise HTTPException(status_code=500, detail="Failed to fetch holidays")
+
 # --------------- HOLIDAYS ---------------
+#usage:  http://127.0.0.1:5000/api/holidays
+@app.get("/api/holidays")
 @app.get("/api/holidays")
 async def get_holidays():
     year = datetime.now().year
-    API_KEY = "1234567890abcdef1234567890abcdef"  # replace with your real key
-    url = f"https://holidays.abstractapi.com/v1/?api_key={API_KEY}&country=IN&year={year}"
+    API_KEY = "gxvGOSoSUCPVVvd1bvxfrkwTDOXIQZYB"  # Your real Calendarific API key
+  
+    url = f"https://calendarific.com/api/v2/holidays?api_key={API_KEY}&country=IN&year={year}"
 
     try:
         async with httpx.AsyncClient() as client:
@@ -110,14 +146,17 @@ async def get_holidays():
             print("📦 Raw Response:", resp.text)
 
         if resp.status_code != 200:
-         raise HTTPException(status_code=resp.status_code, detail="Holiday API failed")
+            raise HTTPException(status_code=resp.status_code, detail="Holiday API failed")
 
         data = resp.json()
-        return [{"date": h["date"], "name": h["name"]} for h in data]
+        holidays = data.get("response", {}).get("holidays", [])
+        return [{"date": h["date"]["iso"], "name": h["name"]} for h in holidays]
 
     except Exception as e:
         print("❌ Backend Holiday Error:", str(e))
         raise HTTPException(status_code=500, detail="Failed to fetch holidays")
+    
+
     
 #--------------MANAGE STUDENTS--------------
 @app.get("/api/students")
@@ -341,3 +380,96 @@ async def delete_course(course_id: str):
         raise HTTPException(status_code=404, detail="Course not found")
     return {"message": "Deleted successfully"}
 
+
+
+
+# MANAGE TEACHERS
+@app.post("/api/teachers")
+async def create_teacher(teacher: Teacher):
+    existing_teacher = await db["user"].find_one({"_id": teacher.id, "role": "teacher"})
+    if existing_teacher:
+        raise HTTPException(status_code=400, detail="Teacher with this ID already exists")
+
+    new_teacher = {
+        "_id": teacher.id,
+        "sl_no": teacher.id,
+        "display_name": teacher.name,
+        "email": teacher.email,
+        "department": teacher.department,
+        "coursename": teacher.coursename,
+        "coursecode": teacher.coursecode,
+        "role": "teacher"
+    }
+
+    await db["user"].insert_one(new_teacher)
+
+    return {"message": "Teacher added successfully", "teacher": teacher}
+
+#Usage: POST /api/teachers
+# http://127.0.0.1:5000/api/teachers
+# Example Request Body:
+# {
+#   "id": "t001",
+#   "name": "John Smith",
+#   "email": "john.smith@example.com",
+#   "department": "Mathematics",
+#   "coursename": "Algebra 101",
+#   "coursecode": "MATH101"
+# }
+
+
+
+# Update Existing Teacher
+@app.put("/api/teachers/{teacher_id}")
+async def update_teacher(teacher_id: str, teacher: Teacher):
+    update_result = await db["user"].update_one(
+        {"_id": teacher_id, "role": "teacher"},
+        {"$set": {
+            "display_name": teacher.name,
+            "email": teacher.email,
+            "department": teacher.department,
+            "coursename": teacher.coursename,
+            "coursecode": teacher.coursecode
+        }}
+    )
+
+    if update_result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+
+    return {"message": "Teacher updated successfully", "teacher": teacher}
+
+#Usage
+
+# http://127.0.0.1:5000/api/teachers/t001
+# {
+#   "id": "t001",
+#   "name": "John S.",
+#   "email": "john.s@example.com",
+#   "department": "Mathematics and Statistics",
+#   "coursename": "Advanced Algebra",
+#   "coursecode": "MATH201"
+# }
+
+
+
+
+# Get All Teachers
+@app.get("/api/teachers")
+async def get_teachers():
+    teachers_cursor = db["user"].find({"role": "teacher"})
+    teachers = []
+    async for teacher in teachers_cursor:
+        teacher["_id"] = str(teacher["_id"])
+        teachers.append({
+            "id": teacher["_id"],
+            "name": teacher.get("display_name"),
+            "email": teacher.get("email"),
+            "department": teacher.get("department"),
+            "coursename": teacher.get("coursename"),
+            "coursecode": teacher.get("coursecode")
+        })
+
+    return teachers
+
+
+    #Usage: http://127.0.0.1:5000/api/teachers
