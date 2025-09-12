@@ -108,7 +108,6 @@ input::placeholder {
    color: #999;
    /* light gray */
    opacity: 1;
-   /* ensure visibility */
 }
 
 /* For select placeholder (first disabled option) */
