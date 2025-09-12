@@ -106,7 +106,6 @@
 /* For input placeholders */
 input::placeholder {
    color: #999;
-   /* light gray */
    opacity: 1;
 }
 
