@@ -9,14 +9,7 @@ from bson import ObjectId
 
 app = FastAPI()
 
-# Define Teacher model here or import from models file
-class Teacher(BaseModel):
-    id: str
-    name: str
-    email: EmailStr
-    department: Optional[str] = None
-    coursename: str
-    coursecode: str
+
 
 API_KEY = "1234567890abcdef1234567890abcdef"
 year = datetime.now().year
@@ -75,18 +68,22 @@ async def login(creds: LoginCredential):
 # ---------------- STATS ----------------
 @app.get("/api/stats")
 async def get_stats():
+    # Counts of students and teachers
     students_count = await db["user"].count_documents({"role": "student"})
     teachers_count = await db["user"].count_documents({"role": "teacher"})
 
+    # Gender breakdown
     male_students = await db["user"].count_documents({"role": "student", "gender": "male"})
     female_students = await db["user"].count_documents({"role": "student", "gender": "female"})
-    
-    total_courses = await db["courses"].count_documents({"status": "Active"})
-    total_divisions = len(await db["user"].distinct("division"))
-    print(total_divisions)  # e.g., 4
-
     male_percent = (male_students / students_count * 100) if students_count > 0 else 0
     female_percent = (female_students / students_count * 100) if students_count > 0 else 0
+
+    # Distinct divisions among students
+    divisions = await db["user"].distinct("division", {"role": "student"})
+    divisions_count = len(divisions)
+
+    # Courses count
+    courses_count = await db["courses"].count_documents({})
 
     return {
         "students_count": students_count,
@@ -95,8 +92,8 @@ async def get_stats():
         "female_students": female_students,
         "male_percent": round(male_percent, 2),
         "female_percent": round(female_percent, 2),
-        "total_courses": total_courses,
-        "total_divisions": total_divisions
+        "divisions_count": divisions_count,
+        "courses_count": courses_count
     }
 
 # ---------------- NOTICES ----------------
@@ -157,12 +154,24 @@ async def get_holidays():
 
         data = resp.json()
         holidays = data.get("response", {}).get("holidays", [])
-        return [{"date": h["date"]["iso"], "name": h["name"]} for h in holidays]
+
+        formatted_holidays = []
+        for h in holidays:
+            date_str = h["date"]["iso"]
+            date_obj = datetime.fromisoformat(date_str)
+            day_of_week = date_obj.strftime("%A")  # e.g., Monday, Tuesday
+            formatted_holidays.append({
+                "date": date_str,
+                "day": day_of_week,
+                "name": h["name"]
+            })
+
+        return formatted_holidays
 
     except Exception as e:
         print("❌ Backend Holiday Error:", str(e))
         raise HTTPException(status_code=500, detail="Failed to fetch holidays")
-    
+
 
     
 #--------------MANAGE STUDENTS--------------
@@ -389,6 +398,14 @@ async def delete_course(course_id: str):
 
 
 
+class Teacher(BaseModel):
+    id: str
+    name: str
+    email: EmailStr
+    department: Optional[str] = None
+    coursename: str
+    coursecode: str
+    status: Optional[str] = "active"  # default status is active
 
 # MANAGE TEACHERS
 @app.post("/api/teachers")
@@ -405,13 +422,14 @@ async def create_teacher(teacher: Teacher):
         "department": teacher.department,
         "coursename": teacher.coursename,
         "coursecode": teacher.coursecode,
-        "credits": teacher.credits,
-        "role": "teacher"
+        "role": "teacher",
+        "status": teacher.status  # store status
     }
 
     await db["user"].insert_one(new_teacher)
 
     return {"message": "Teacher added successfully", "teacher": teacher}
+
 
 #Usage: POST /api/teachers
 # http://127.0.0.1:5000/api/teachers
@@ -423,7 +441,8 @@ async def create_teacher(teacher: Teacher):
 #   "department": "Mathematics",
 #   "coursename": "Algebra 101",
 #   "coursecode": "MATH101"
-# }
+#  "status": "active" 
+# # }
 
 
 
@@ -437,7 +456,8 @@ async def update_teacher(teacher_id: str, teacher: Teacher):
             "email": teacher.email,
             "department": teacher.department,
             "coursename": teacher.coursename,
-            "coursecode": teacher.coursecode
+            "coursecode": teacher.coursecode,
+            "status": teacher.status  # update status
         }}
     )
 
@@ -456,10 +476,8 @@ async def update_teacher(teacher_id: str, teacher: Teacher):
 #   "department": "Mathematics and Statistics",
 #   "coursename": "Advanced Algebra",
 #   "coursecode": "MATH201"
+#  "status": "inactive" 
 # }
-
-
-
 
 # Get All Teachers
 @app.get("/api/teachers")
@@ -474,10 +492,12 @@ async def get_teachers():
             "email": teacher.get("email"),
             "department": teacher.get("department"),
             "coursename": teacher.get("coursename"),
-            "coursecode": teacher.get("coursecode")
+            "coursecode": teacher.get("coursecode"),
+            "status": teacher.get("status", "active")  # default to active if not set
         })
 
     return teachers
-
-
     #Usage: http://127.0.0.1:5000/api/teachers
+
+
+
