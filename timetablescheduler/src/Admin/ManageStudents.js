@@ -282,7 +282,10 @@ function ManageStudents() {
                   <div className="pagination">
                      <button
                         onClick={() => setCurrentPageUpload(currentPageUpload - 1)}
-                        disabled={currentPageUpload === 1}
+                        disabled={
+                           uploadedStudents.length <= rowsPerPageUpload ||
+                           currentPageUpload === 1
+                        }
                      >
                         Prev
                      </button>
@@ -291,11 +294,15 @@ function ManageStudents() {
                      </span>
                      <button
                         onClick={() => setCurrentPageUpload(currentPageUpload + 1)}
-                        disabled={currentPageUpload === totalPagesUpload}
+                        disabled={
+                           uploadedStudents.length <= rowsPerPageUpload ||
+                           currentPageUpload === totalPagesUpload
+                        }
                      >
                         Next
                      </button>
                   </div>
+
 
                   <div className="belowButton">
                      <button className="add-btn" onClick={handleValidate} disabled={uploadedStudents.length === 0}>Validate</button>
