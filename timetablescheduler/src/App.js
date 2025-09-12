@@ -6,7 +6,6 @@ import ManageTeachers from './Admin/ManageTeachers';
 import ManageStudents from './Admin/ManageStudents';
 import ManageCourse from './Admin/ManageCourse';
 import GenerateTimetable from './Admin/GenerateTimetable';
-import GeneratedTimetables from "./Admin/GeneratedTimetables";
 
 function App() {
   
@@ -19,8 +18,7 @@ function App() {
           <Route path="/teachers" element={<ManageTeachers />} />
           <Route path="/students" element={<ManageStudents />} />
           <Route path="/courses" element={<ManageCourse />} />
-          <Route path="/createTimetable" element={<GenerateTimetable />} />
-          <Route path="/timetables" element={<GeneratedTimetables />} />
+          <Route path="/timetables" element={<GenerateTimetable />} />
         </Routes>
       </Router>
     </div>

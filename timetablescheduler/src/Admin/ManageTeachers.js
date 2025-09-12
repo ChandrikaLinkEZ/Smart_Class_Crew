@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./ManageStudents"; // reuse same theme
-import { NavLink } from "react-router-dom";
 import Navbar from "../Refs/Navbar";
 import SideBar from "../Refs/SideBar";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";

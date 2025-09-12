@@ -86,8 +86,8 @@ function AdminDashboard() {
                   <div className="card-grid">
                      <div className="card"><p>Students</p><b>{stats.students_count || 0}</b></div>
                      <div className="card"><p>Teachers</p><b>{stats.teachers_count || 0}</b></div>
-                     <div className="card"><p>Total Courses</p><b>{stats.total_courses || 0}</b></div>
-                     <div className="card"><p>Total Divisions</p><b>{stats.total_divisions || 0}</b></div>
+                     <div className="card"><p>Total Courses</p><b>{stats.courses_count || 0}</b></div>
+                     <div className="card"><p>Total Divisions</p><b>{stats.divisions_count || 0}</b></div>
                   </div>
 
                   <div className="belowGrid">
