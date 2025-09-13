@@ -1,15 +1,13 @@
 /* SettingsPage.css */
-
 .settings-page {
    display: flex;
    height: 100vh;
-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   background: #f5f7fa;
 }
 
 /* Main Content */
 .settings-content {
    flex: 1;
-   background-color: #f4f4f4;
 }
 
 .form-section {
@@ -251,15 +249,6 @@
    background: red;
    color: white;
    border-radius: 5px;
-}
-
-.settings-page {
-   display: flex;
-   font-family: Arial, sans-serif;
-}
-
-.settings-content {
-   flex-grow: 1;
 }
 
 .tabs button {

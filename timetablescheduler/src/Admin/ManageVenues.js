@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
-import Multiselect from "multiselect-react-dropdown";
+// import Multiselect from "multiselect-react-dropdown";
 ReactModal.setAppElement("#root");
 
 function ManageVenues() {
@@ -25,8 +25,8 @@ function ManageVenues() {
    // Pagination
    const indexOfLastRow = currentPage * rowsPerPage;
    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-   const currentVenues = venues.slice(indexOfFirstRow, indexOfLastRow);
-   const totalPages = Math.ceil(venues.length / rowsPerPage);
+   const currentVenues = venues.length > 0 ? venues.slice(indexOfFirstRow, indexOfLastRow) : [];
+   const totalPages = venues.length > 0 ? Math.ceil(venues.length / rowsPerPage) : 1;
 
    const goToPage = (page) => {
       if (page >= 1 && page <= totalPages) {
@@ -47,13 +47,50 @@ function ManageVenues() {
       }
    }, []);
 
+   // const sampleVenues = [
+   //    {
+   //       id: "v1",
+   //       name: "Lecture Hall 101",
+   //       capacity: 60,
+   //       type: "Lecture Hall",
+   //       location: "Block A - 1st Floor"
+   //    },
+   //    {
+   //       id: "v2",
+   //       name: "Computer Lab 201",
+   //       capacity: 40,
+   //       type: "Lab",
+   //       location: "Block B - 2nd Floor"
+   //    },
+   //    {
+   //       id: "v3",
+   //       name: "Seminar Hall",
+   //       capacity: 120,
+   //       type: "Seminar",
+   //       location: "Main Building - Ground Floor"
+   //    },
+   //    {
+   //       id: "v4",
+   //       name: "Electronics Lab",
+   //       capacity: 35,
+   //       type: "Lab",
+   //       location: "Block C - 3rd Floor"
+   //    },
+   //    {
+   //       id: "v5",
+   //       name: "Auditorium",
+   //       capacity: 300,
+   //       type: "Auditorium",
+   //       location: "Main Building - Top Floor"
+   //    }
+   // ];
+
    useEffect(() => {
       fetch("http://localhost:5000/api/venues")
          .then((res) => res.json())
          .then((data) => {
-            setVenues(data)
-            // setSelectedTeachers(data.map())
-            // setTeacherOptions(data.map )
+            setVenues(data);   // update state with array of venues
+            // setVenues(sampleVenues);
          })
          .catch((err) => console.error("Error fetching venues:", err));
    }, []);
@@ -69,7 +106,7 @@ function ManageVenues() {
    };
 
    const handleSave = () => {
-      if (!selectedVenue.name || !selectedVenue.code) {
+      if (!selectedVenue.venuename || !selectedVenue.venuecode) {
          toast.error("❌ Venue Code and Name are required");
          return;
       }
@@ -177,18 +214,17 @@ function ManageVenues() {
                            <th>Code</th>
                            <th>Name</th>
                            <th>Manager</th>
-
                            <th>Edit</th>
                            <th>Delete</th>
                         </tr>
                      </thead>
                      <tbody>
                         {currentVenues.map((venue, index) => (
-                           <tr key={venue.id}>
+                           <tr key={venue._id || venue.id}>
                               <td>{indexOfFirstRow + index + 1}</td>
-                              <td>{venue.code}</td>
-                              <td>{venue.name}</td>
-                              <td>{venue.manage}</td>
+                              <td>{venue.venuecode}</td>
+                              <td>{venue.venuename}</td>
+                              <td>{venue.venuemanager}</td>
 
                               <td>
                                  <button
@@ -325,7 +361,7 @@ function ManageVenues() {
                <h2>Confirm Delete</h2>
                <p>
                   Are you sure you want to delete{" "}
-                  <strong>{venueToDelete?.code}{venueToDelete?.name}</strong>?
+                  <strong>{venueToDelete?.venuecode}{venueToDelete?.venuename}</strong>?
                </p>
                <div className="modal-actions">
                   <button onClick={confirmDelete} className="delete-btn">

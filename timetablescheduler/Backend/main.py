@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator, Field
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 import httpx 
-from typing import Optional, List
+from typing import Optional, List, Union
 from bson import ObjectId
 
 app = FastAPI()
@@ -172,8 +172,7 @@ async def get_holidays():
         print("❌ Backend Holiday Error:", str(e))
         raise HTTPException(status_code=500, detail="Failed to fetch holidays")
 
-
-    
+ 
 #--------------MANAGE STUDENTS--------------
 @app.get("/api/students")
 async def get_students():
@@ -316,14 +315,22 @@ async def commit_students(students: List[Student]):
     
 
 class Course(BaseModel):
-    id: str
-    courseCode: str
-    courseName: str
+    id: Optional[str] = None
+    coursecode: str = Field(..., alias="coursecode")
+    coursename: str = Field(..., alias="coursename")
+    teachers: Union[str, List[str]] 
     credits: int
     department: str
     semester: int
     type: Optional[str] = None
     status: Optional[str] = "Active"
+    
+    @validator("teachers", pre=True)
+    def ensure_list(cls, v):
+        """Normalize teachers field to always be a list"""
+        if isinstance(v, str):
+            return [v]
+        return v
     
 # Get all courses
 @app.get("/api/courses")
@@ -333,8 +340,9 @@ async def get_courses():
     async for c in cursor:
         courses.append({
             "id": str(c["_id"]),
-            "courseCode": c.get("courseCode"),
-            "courseName": c.get("courseName"),
+            "coursecode": c.get("coursecode"),
+            "coursename": c.get("coursename"),
+            "teachers": c.get("teachers"),
             "credits": c.get("credits"),
             "department": c.get("department"),
             "semester": c.get("semester"),
@@ -359,7 +367,81 @@ async def add_course(course: Course):
         res = await db["courses"].insert_one(course_doc)
         return {**course_doc, "id": str(res.inserted_id)}
     
+ 
+# --------------- VALIDATE COURSES ----------------
+@app.post("/api/courses/validate")
+async def validate_courses(courses: List[Course]):
+    try:
+        validated = []
+        for course in courses:
+            # Check if already exists in DB (by email or USN)
+            existing = await db["courses"].find_one({
+                "coursecode": course.coursecode
+            })
+
+            if existing:
+                status = "Duplicate"
+            else:
+                status = "Valid"
+
+            validated.append({
+                "id": course.id,
+                "coursename": course.coursename,
+                "coursecode": course.coursecode,
+                "teachers": course.teachers,
+                "credits": course.credits,
+                "department": course.department,
+                "semester": course.semester,
+                "type": course.type,
+                "status": status
+            })
+
+        return validated
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
+    
+# --------------- COMMIT DATA (Append new records) ----------------
+@app.post("/api/courses/commitData")
+async def commit_courses(courses: List[Course]):
+    try:
+        new_courses = []
+        for idx, course in enumerate(courses, start=1):
+            # Check for duplicates in user by email or usn
+            existing = await db["courses"].find_one({
+                "coursecode": course.coursecode
+            })
+            if existing:
+                continue  # Skip duplicates
+
+            student_doc = {
+                "_id": course.id,
+                "sl_no": idx,
+                "coursename": course.coursename,
+                "coursecode": course.coursecode,
+                "teachers": course.teachers,
+                "credits": course.credits,
+                "department": course.department,
+                "semester": course.semester,
+                "type": course.type
+            }
+            new_courses.append(student_doc)
+
+        if new_courses:
+            await db["user"].insert_many(new_courses)
+            await db["courses"].insert_many(new_courses)
+
+        return {
+            "message": "Courses committed successfully",
+            "inserted": len(new_courses),
+            "skipped": len(courses) - len(new_courses)
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+       
 # Bulk update (for multiple edits/deletes at once)
 @app.put("/api/courses/bulk-update")
 async def bulk_update_courses(courses: List[Course]):
@@ -369,8 +451,9 @@ async def bulk_update_courses(courses: List[Course]):
         new_courses = []
         for idx, course in enumerate(courses, start=1):
             new_courses.append({
-                "courseCode": course.courseCode,
-                "courseName": course.courseName,
+                "coursecode": course.coursecode,
+                "coursename": course.coursename,
+                "teachers": course.teachers,
                 "credits": course.credits,
                 "department": course.department,
                 "semester": course.semester,

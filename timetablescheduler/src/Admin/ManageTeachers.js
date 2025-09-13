@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import "./ManageStudents"; // reuse same theme
 import Navbar from "../Refs/Navbar";
 import SideBar from "../Refs/SideBar";
-import { FaEdit, FaTrash, FaPlus, FaUpload } from "react-icons/fa";
+import { FaEdit, FaTrash, FaUpload } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -44,8 +44,8 @@ function ManageTeachers() {
 
    const indexOfLastRow = currentPage * rowsPerPage;
    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-   const currentTeachers = teachers.slice(indexOfFirstRow, indexOfLastRow);
-   const totalPages = Math.ceil(teachers.length / rowsPerPage);
+   const currentTeachers = teachers.length > 0 ? teachers.slice(indexOfFirstRow, indexOfLastRow) : [];
+   const totalPages = teachers.length > 0 ? Math.ceil(teachers.length / rowsPerPage) : 1;
 
    const goToPage = (page) => {
       if (page >= 1 && page <= totalPages) {
