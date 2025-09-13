@@ -10,26 +10,23 @@ import ReactModal from "react-modal";
 import Multiselect from "multiselect-react-dropdown";
 ReactModal.setAppElement("#root");
 
-function ManageCourses() {
+function ManageVenues() {
    const [user, setUser] = useState(null);
-   const [courses, setCourses] = useState([]);
+   const [venues, setVenues] = useState([]);
    const navigate = useNavigate();
    const [currentPage, setCurrentPage] = useState(1);
    const rowsPerPage = 5;
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-   const [selectedCourse, setSelectedCourse] = useState(null);
-   const [courseToDelete, setCourseToDelete] = useState(null);
+   const [selectedVenue, setSelectedVenue] = useState(null);
+   const [venueToDelete, setVenueToDelete] = useState(null);
    const [activeTab, setActiveTab] = useState("add"); // "add" = edit/delete, "view" = readonly
-   const [searchQuery, setSearchQuery] = useState("");
-   const [teacherOptions, setTeacherOptions] = useState([{ name: 'TEACHER!', id: 1 }, { name: 'teacher2', id: 2 }]);
-   const [selectedTeachers, setSelectedTeachers] = useState([]);
 
    // Pagination
    const indexOfLastRow = currentPage * rowsPerPage;
    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-   const currentCourses = courses.slice(indexOfFirstRow, indexOfLastRow);
-   const totalPages = Math.ceil(courses.length / rowsPerPage);
+   const currentVenues = venues.slice(indexOfFirstRow, indexOfLastRow);
+   const totalPages = Math.ceil(venues.length / rowsPerPage);
 
    const goToPage = (page) => {
       if (page >= 1 && page <= totalPages) {
@@ -37,22 +34,12 @@ function ManageCourses() {
       }
    };
 
-
    const handleLogout = () => {
       console.log("Logged out!");
       navigate("/");
    };
 
 
-   const handleTeacherChange = (selectedList, selectedItem) => {
-
-      console.log("Selected Teachers:", selectedList);
-      setSelectedTeachers(selectedList);
-   };
-   const onRemove = (selectedList, removedItem) => {
-      console.log('Removed:', removedItem);
-      setSelectedTeachers(selectedList);
-   };
    useEffect(() => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
@@ -60,95 +47,88 @@ function ManageCourses() {
       }
    }, []);
 
-   // useEffect(() => {
-   //    fetch("http://localhost:5000/api/teachers")
-   //       .then((res) => res.json())
-   //       .then((data) => setTeachers(data))
-   //       .catch((err) => console.error("Error fetching teachers:", err));
-   // }, []);
-
    useEffect(() => {
-      fetch("http://localhost:5000/api/courses")
+      fetch("http://localhost:5000/api/venues")
          .then((res) => res.json())
          .then((data) => {
-            setCourses(data)
+            setVenues(data)
             // setSelectedTeachers(data.map())
             // setTeacherOptions(data.map )
          })
-         .catch((err) => console.error("Error fetching courses:", err));
+         .catch((err) => console.error("Error fetching venues:", err));
    }, []);
 
-   const handleEdit = (course) => {
-      setSelectedCourse({ ...course });
+   const handleEdit = (venue) => {
+      setSelectedVenue({ ...venue });
       setIsModalOpen(true);
    };
 
    const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setSelectedCourse((prev) => ({ ...prev, [name]: value }));
+      setSelectedVenue((prev) => ({ ...prev, [name]: value }));
    };
 
    const handleSave = () => {
-      if (!selectedCourse.courseCode || !selectedCourse.courseName) {
-         toast.error("❌ Course Code and Name are required");
+      if (!selectedVenue.name || !selectedVenue.code) {
+         toast.error("❌ Venue Code and Name are required");
          return;
       }
 
-      // If editing existing course
-      if (selectedCourse.id) {
-         setCourses((prev) =>
+      // If editing existing Venue
+      if (selectedVenue.id) {
+         setVenues((prev) =>
             prev.map((c) =>
-               c.id === selectedCourse.id ? { ...selectedCourse } : c
+               c.id === selectedVenue.id ? { ...selectedVenue } : c
             )
          );
-         toast.success("✅ Course updated locally");
+         toast.success("✅ Venue updated locally");
       } else {
-         // Adding new course
-         const newCourse = {
-            ...selectedCourse,
+         // Adding new Venue
+         const newVenue = {
+            ...selectedVenue,
             id: Date.now(), // temporary unique ID
          };
-         setCourses((prev) => [...prev, newCourse]);
-         toast.success("✅ Course added locally");
+         setVenues((prev) => [...prev, newVenue]);
+         toast.success("✅ Venue added locally");
       }
 
       setIsModalOpen(false);
-      setSelectedCourse(null);
+      setSelectedVenue(null);
    };
 
-   const handleDelete = (course) => {
-      setCourseToDelete(course);
+   const handleDelete = (venue) => {
+      setVenueToDelete(venue);
       setIsDeleteModalOpen(true);
    };
 
    const confirmDelete = () => {
       // Local delete only
-      setCourses((prev) => prev.filter((c) => c.id !== courseToDelete.id));
+      setVenues((prev) => prev.filter((c) => c.id !== venueToDelete.id));
 
-      toast.success("✅ Course deleted locally");
+      toast.success("✅ Venue deleted locally");
 
       setIsDeleteModalOpen(false);
-      setCourseToDelete(null);
+      setVenueToDelete(null);
    };
 
    const handleBulkUpdate = () => {
-      fetch(`http://localhost:5000/api/courses/bulk-update`, {
+      fetch(`http://localhost:5000/api/venues/bulk-update`, {
          method: "PUT",
          headers: {
             "Content-Type": "application/json",
          },
-         body: JSON.stringify(courses), // send entire courses state
+         body: JSON.stringify(venues),
       })
          .then((res) => {
             if (!res.ok) throw new Error("Bulk update failed");
             return res.json();
          })
          .then((data) => {
-            toast.success(`✅ ${data.count} courses updated in DB`);
+            toast.success(`✅ ${data.count} Venues updated in DB`);
          })
          .catch((err) => {
             console.error("Error in bulk update:", err);
-            toast.error("❌ Error updating courses");
+            toast.error("❌ Error updating Venues");
          });
    };
 
@@ -157,7 +137,7 @@ function ManageCourses() {
          <SideBar />
 
          <div className="student">
-            <Navbar title="Manage Courses" user={user} onLogout={handleLogout} />
+            <Navbar title="Manage Venues" user={user} onLogout={handleLogout} />
 
             {/* Tabs */}
             <div className="tabs">
@@ -182,45 +162,37 @@ function ManageCourses() {
                   <button
                      className="add-btn"
                      onClick={() => {
-                        setSelectedCourse({});
+                        setSelectedVenue({});
                         setIsModalOpen(true);
                      }}
                   >
                      <FaPlus style={{ marginRight: "6px" }} />
-                     Add Course
+                     Add Venue
                   </button>
 
                   <table className="students-table">
                      <thead>
                         <tr>
                            <th>Sl No</th>
-                           <th>Course Name</th>
-                           <th>Course Code</th>
-                           <th>Teachers</th>
-                           <th>Credits</th>
-                           <th>Department</th>
-                           <th>Semester</th>
-                           <th>Type</th>
-                           <th>Status</th>
+                           <th>Code</th>
+                           <th>Name</th>
+                           <th>Manager</th>
+
                            <th>Edit</th>
                            <th>Delete</th>
                         </tr>
                      </thead>
                      <tbody>
-                        {currentCourses.map((course, index) => (
-                           <tr key={course.id}>
+                        {currentVenues.map((venue, index) => (
+                           <tr key={venue.id}>
                               <td>{indexOfFirstRow + index + 1}</td>
-                              <td>{course.courseName}</td>
-                              <td>{course.courseCode}</td>
-                              <td>{course.teachers}</td>
-                              <td>{course.credits}</td>
-                              <td>{course.department}</td>
-                              <td>{course.semester}</td>
-                              <td>{course.type}</td>
-                              <td>{course.status}</td>
+                              <td>{venue.code}</td>
+                              <td>{venue.name}</td>
+                              <td>{venue.manage}</td>
+
                               <td>
                                  <button
-                                    onClick={() => handleEdit(course)}
+                                    onClick={() => handleEdit(venue)}
                                     className="edit-btn"
                                  >
                                     <FaEdit />
@@ -228,7 +200,7 @@ function ManageCourses() {
                               </td>
                               <td>
                                  <button
-                                    onClick={() => handleDelete(course)}
+                                    onClick={() => handleDelete(venue)}
                                     className="delete-btn"
                                  >
                                     <FaTrash />
@@ -258,7 +230,7 @@ function ManageCourses() {
                      </button>
                   </div>
 
-                  <button className="add-btn" onClick={handleBulkUpdate}>Save Course Details</button>
+                  <button className="add-btn" onClick={handleBulkUpdate}>Save Venue Details</button>
                </>
             )}
 
@@ -267,22 +239,18 @@ function ManageCourses() {
                   <thead>
                      <tr>
                         <th>Sl No</th>
-                        <th>Course Code</th>
-                        <th>Course Name</th>
-                        <th>Credits</th>
-                        <th>Department</th>
-                        <th>Semester</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Manager</th>
                      </tr>
                   </thead>
                   <tbody>
-                     {currentCourses.map((course, index) => (
-                        <tr key={course.id}>
+                     {currentVenues.map((venue, index) => (
+                        <tr key={venue.id}>
                            <td>{indexOfFirstRow + index + 1}</td>
-                           <td>{course.courseCode}</td>
-                           <td>{course.courseName}</td>
-                           <td>{course.credits}</td>
-                           <td>{course.department}</td>
-                           <td>{course.semester}</td>
+                           <td>{venue.code}</td>
+                           <td>{venue.name}</td>
+                           <td>{venue.manager}</td>
                         </tr>
                      ))}
                   </tbody>
@@ -297,105 +265,45 @@ function ManageCourses() {
                overlayClassName="modal-overlay"
             >
 
-               <h2 htmlFor="course">{selectedCourse?.id ? "Edit Course" : "Add Course"}</h2>
+               <h2 htmlFor="venue">{selectedVenue?.id ? "Edit Venue" : "Add Venue"}</h2>
                <div className="form-grid">
                   <div className="form-field">
-                     <label htmlFor="courseCode">Course Code</label>
+                     <label htmlFor="venuecode">Venue Code</label>
                      <input
-                        id="courseCode"
+                        id="venuecode"
                         type="text"
-                        name="courseCode"
-                        value={selectedCourse?.courseCode || ""}
+                        name="venuecode"
+                        value={selectedVenue?.venuecode || ""}
                         onChange={handleInputChange}
                      />
                   </div>
 
                   <div className="form-field">
-                     <label htmlFor="courseName">Course Name</label>
+                     <label htmlFor="venuename">Venue Name</label>
                      <input
-                        id="courseName"
+                        id="venuename"
                         type="text"
-                        name="courseName"
-                        value={selectedCourse?.courseName || ""}
+                        name="venuename"
+                        value={selectedVenue?.venuename || ""}
                         onChange={handleInputChange}
                      />
                   </div>
 
-                  <div className="form-field">
-                     <label htmlFor="credits">Credits</label>
-                     <input
-                        id="credits"
-                        type="number"
-                        name="credits"
-                        value={selectedCourse?.credits || ""}
-                        onChange={handleInputChange}
-                     />
-                  </div>
 
                   <div className="form-field">
-                     <label htmlFor="department">Department</label>
+                     <label htmlFor="manager">Manager</label>
                      <input
-                        id="department"
+                        id="manager"
                         type="text"
-                        name="department"
-                        value={selectedCourse?.department || ""}
-                        onChange={handleInputChange}
-                     />
-                  </div>
-
-                  <div className="form-field">
-                     <label htmlFor="semester">Semester</label>
-                     <input
-                        id="semester"
-                        type="number"
-                        name="semester"
-                        value={selectedCourse?.semester || ""}
+                        name="manager"
+                        value={selectedVenue?.manager || ""}
                         onChange={handleInputChange}
                      />
                   </div>
 
 
-                  <div className="form-field">
-                     <label htmlFor="type">Type</label>
-                     <select
-                        id="type"
-                        name="type"
-                        value={selectedCourse?.type || ""}
-                        onChange={handleInputChange}
-                     >
-                        <option value="">Select</option>
-                        <option value="Core">Core</option>
-                        <option value="Elective">Elective</option>
-                     </select>
-                  </div>
-
-                  <div className="form-field">
-                     <label htmlFor="status">Status</label>
-                     <select
-                        id="status"
-                        name="status"
-                        value={selectedCourse?.status || "Active"}
-                        onChange={handleInputChange}
-                     >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                     </select>
-                  </div>
-
-                  <div className="form-field">
-                     <label htmlFor="teachers">Assign Teachers</label>
-
-                     <Multiselect
-                        id="teachers"
-                        options={teacherOptions}
-                        onSelect={handleTeacherChange}
-                        onRemove={onRemove}
-                        displayValue="name"
-                        placeholder="Select teachers"
-                     />
 
 
-                  </div>
                </div>
 
 
@@ -417,7 +325,7 @@ function ManageCourses() {
                <h2>Confirm Delete</h2>
                <p>
                   Are you sure you want to delete{" "}
-                  <strong>{courseToDelete?.courseName}</strong>?
+                  <strong>{venueToDelete?.code}{venueToDelete?.name}</strong>?
                </p>
                <div className="modal-actions">
                   <button onClick={confirmDelete} className="delete-btn">
@@ -436,4 +344,4 @@ function ManageCourses() {
    );
 }
 
-export default ManageCourses;
+export default ManageVenues;
